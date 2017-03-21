@@ -1,0 +1,54 @@
+используется socket.io
+в качестве transports используются websocket
+
+При подключении к серверу в query нужно передавать в token
+# EXAMPLE
+const socket = io.connect(url, {
+  query: {
+    token: token,
+  },
+  transports: ['websocket'],
+})
+
+На сервере есть небольшой роутинг для сокетов
+Сокеты для чата коннектятся к https://gyfi.mgbeta.ru/chat,
+Или попробуй к wss://gyfi.mgbeta.ru/chat, не знаю как это в Unity :)
+
+ДОСТУПНЫЕ МЕТОДЫ
+1) 'message' - отправить сообщение
+text - текст сообщения
+to - id  собеседника
+{
+  text: '123',
+  to: 1,
+}
+каждый метод emit имеет callback
+иногда я буду передавать что нибудь в них
+в callback'e всегда будет 2 аргумента
+в 1 аргументе будет ошибка, если такое сличилось, но обычно там просто null
+во 2 аргументе будет какой то объект
+в этом методе в callback'e вторым аргументом возвращается message, который ты послал
+# EXAMPLE
+socket.emit('message', {
+  text: text,
+  to: userId,
+})
+
+2) 'getStory' - получить историю сообщений
+userId - id собеседника
+{
+  userId: 1,
+}
+в callback'e вернется массив сообщений, тоесть переписка между текущим юзером и другим юзером
+можно потренироваться и слать сообщения самому себе
+# EXAMPLE
+socket_1.emit('getStory', { userId: userId_1 }, function(err, story){})
+
+СОБЫТИЯ
+
+1) 'message' - новое сообщение
+В 1 аргументе лежит сообщение
+# EXAMPLE
+socket.on('message', function(message) {
+  console.log(message)
+})

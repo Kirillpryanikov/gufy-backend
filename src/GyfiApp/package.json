@@ -1,0 +1,4 @@
+{
+  "browser": "GyfiApp.client.js",
+  "main": "GyfiApp.server.js"
+}

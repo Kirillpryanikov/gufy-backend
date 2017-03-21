@@ -1,0 +1,9 @@
+.root {
+  width: 1000px;
+  height: 700px;
+  background: url(http://i.imgur.com/PpoFF.jpg);
+  position: relative;
+}
+.userWrapper{
+  position: absolute;
+}

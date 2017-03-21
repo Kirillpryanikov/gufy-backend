@@ -1,0 +1,14 @@
+.root {
+  width: 64px;
+  height: 64px;
+  border: 1px red solid;
+  position: relative;
+  /*background: url(http://i.imgur.com/PpoFF.jpg)*/
+}
+.name{
+  position: absolute;
+  left: 50%;
+  top: -20px;
+  color: lightgreen;
+  font-weight: 700;
+}
