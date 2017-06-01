@@ -7,7 +7,7 @@ export default(ctx) => {
   controller.products = async function(req) {
     const params = req.allParams()
     const categoryId = params.id
-    const products = await Product.findAll({ categoryId, order: '"allocated" DESC' })
+    const products = await Product.findAll({ where: { categoryId: categoryId}, order: '"allocated" DESC' })
     return products
   }
 

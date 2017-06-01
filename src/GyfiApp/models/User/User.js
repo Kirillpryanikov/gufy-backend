@@ -515,7 +515,9 @@ export default function createModel(ctx) {
       async getDevices() {
         const { Device } = ctx.models
         return Device.findAll({
-          userId: this.get('id'),
+          where: {
+            userId: this.get('id')
+          }
         })
       },
       async removeUserDevice(params = {}) {

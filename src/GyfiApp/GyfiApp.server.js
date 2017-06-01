@@ -144,8 +144,12 @@ export default class GyfiApp extends ReactApp {
     this.helpers.saveFile = async function saveFile(title, file) {
       const dirname = __dirname + '/public'
       const type = file.mimetype.split('/')[1] || 'png'
-      const filename = `/storage/${title}.${type}`
-      await Promise.promisify(file.mv)([dirname, filename].join('/'))
+      let filename = `storage/${title}.${type}`
+      try {
+        await Promise.promisify(file.mv)([dirname, filename].join('/'))
+      }
+      catch(err) {
+      }
       return filename
     }
     this.helpers.isAuth = function isAuth(req) {

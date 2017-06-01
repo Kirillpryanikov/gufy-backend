@@ -14,11 +14,11 @@ const config = {
   // protocol: 'https',
   // host: 'gyfi.mgbeta.ru',
   sql: {
-    host: 's3.mgbeta.ru',
-    port: 10096,
-    password: 'NdhgpGh3ODNXYZd0zPZc',
-    username: 'mgbeta',
-    database: 'gyfi',
+    host: 'legend02.mysql.ukraine.com.ua',
+    // port: 10096,
+    password: '2lwxswfy',
+    username: 'legend02_gufy',
+    database: 'legend02_gufy',
   },
   // sql: {
   //   host: '92.53.96.16',
@@ -57,7 +57,7 @@ const config = {
     },
   },
   db: {
-    uri: 'mongodb://s3.mgbeta.ru:10098/gyfi1',
+    uri: 'mongodb://gufyuser:gufyuser@ds161001.mlab.com:61001/mongo-gufy',
     options: {},
   },
   jwt: {

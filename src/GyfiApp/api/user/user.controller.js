@@ -125,7 +125,7 @@ export default(ctx) => {
     const { socialNetworkType } = params
     const user = await User.findById(userId)
     .then(_checkNotFound('User'))
-    return user.addSocialNetwork(socialNetworkType)
+    return user.removeSocialNetwork(socialNetworkType)
   }
 
   controller.addDevice = async function(req) {

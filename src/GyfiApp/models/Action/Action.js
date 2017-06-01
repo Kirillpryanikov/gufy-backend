@@ -35,7 +35,13 @@ export default function createModel(ctx) {
       required: false,
       defaultValue: 1,
     },
-    images: sequelize.jsonField(sequelize, 'action', 'images'),
+    //This method create json not valid
+    // images: sequelize.jsonField(sequelize, 'action', 'images'),
+    images: {
+      type: Sequelize.STRING,
+      required: true,
+      allowNull: false,
+    },
     finishedAt: {
       type: Sequelize.DATE,
       required: true,
@@ -132,12 +138,13 @@ export default function createModel(ctx) {
         return null
       },
       toJSON() {
-        const action = this.dataValues
+        const action = this.dataValues;
         if (action.images && validator.isJSON(action.images)) {
           action.images = this.get('images')
-        } else {
-          action.images = []
         }
+        // else {
+        //   action.images = [];
+        // }
         if (Array.isArray(action.images)) {
           action.images = action.images.map(image => {
             if (image && image[0] === '/') {
@@ -146,7 +153,7 @@ export default function createModel(ctx) {
             return image
           })
         }
-        return action
+        return action;
       },
     },
   })

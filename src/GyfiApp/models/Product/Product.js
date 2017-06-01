@@ -1,4 +1,6 @@
 import Sequelize from 'sequelize'
+import validator from 'validator'
+
 export default function createModel(ctx) {
   const sequelize = ctx.sequelize
 
@@ -44,7 +46,13 @@ export default function createModel(ctx) {
       defaultValue: 'REVIEW',
       allowNull: false,
     },
-    images: sequelize.jsonField(sequelize, 'product', 'images'),
+    //This method create json not valid
+    // images: sequelize.jsonField(sequelize, 'product', 'images'),
+    images: {
+      type: Sequelize.STRING,
+      required: true,
+      allowNull: false,
+    },
     description: {
       type: Sequelize.STRING,
       defaultValue: '',
@@ -73,6 +81,12 @@ export default function createModel(ctx) {
         const product = this.dataValues
         product.vip = this.get('vip')
         product.images = this.get('images')
+        if (product.images && validator.isJSON(product.images)) {
+          product.images = this.get('images')
+        }
+        // else {
+        //   product.images = []
+        // }
         if (Array.isArray(product.images)) {
           product.images = product.images.map(image => {
             if (image && image[0] === '/') {
