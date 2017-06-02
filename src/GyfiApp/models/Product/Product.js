@@ -46,13 +46,7 @@ export default function createModel(ctx) {
       defaultValue: 'REVIEW',
       allowNull: false,
     },
-    //This method create json not valid
-    // images: sequelize.jsonField(sequelize, 'product', 'images'),
-    images: {
-      type: Sequelize.STRING,
-      required: true,
-      allowNull: false,
-    },
+    images: sequelize.jsonField(sequelize, 'product', 'images'),
     description: {
       type: Sequelize.STRING,
       defaultValue: '',
@@ -83,10 +77,9 @@ export default function createModel(ctx) {
         product.images = this.get('images')
         if (product.images && validator.isJSON(product.images)) {
           product.images = this.get('images')
+        } else {
+          product.images = []
         }
-        // else {
-        //   product.images = []
-        // }
         if (Array.isArray(product.images)) {
           product.images = product.images.map(image => {
             if (image && image[0] === '/') {
@@ -99,6 +92,17 @@ export default function createModel(ctx) {
       },
     },
   })
+
+  Product.hook('beforeValidate', function (product) {
+    if (typeof product.dataValues.images === 'string') {
+      product.images = [product.dataValues.images]
+    }
+    if (!Array.isArray(product.images)) {
+      product.images = ['http://wmz-pwnz.ru/sites/default/files/no_avatar.jpg']
+    }
+    product.images = JSON.stringify(product.images);
+  })
+
   Product.hook('afterCreate', function (product) {
     ctx.models.Category.findById(product.get('categoryId'))
     .then(category => {

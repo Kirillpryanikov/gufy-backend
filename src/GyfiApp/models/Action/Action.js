@@ -35,13 +35,7 @@ export default function createModel(ctx) {
       required: false,
       defaultValue: 1,
     },
-    //This method create json not valid
-    // images: sequelize.jsonField(sequelize, 'action', 'images'),
-    images: {
-      type: Sequelize.STRING,
-      required: true,
-      allowNull: false,
-    },
+    images: sequelize.jsonField(sequelize, 'action', 'images'),
     finishedAt: {
       type: Sequelize.DATE,
       required: true,
@@ -139,12 +133,12 @@ export default function createModel(ctx) {
       },
       toJSON() {
         const action = this.dataValues;
+        action.images = this.get('images')
         if (action.images && validator.isJSON(action.images)) {
           action.images = this.get('images')
+        } else {
+          action.images = [];
         }
-        // else {
-        //   action.images = [];
-        // }
         if (Array.isArray(action.images)) {
           action.images = action.images.map(image => {
             if (image && image[0] === '/') {
@@ -162,12 +156,11 @@ export default function createModel(ctx) {
       action.images = [action.dataValues.images]
     }
     if (!Array.isArray(action.images)) {
-      action.images = []
+      action.images = ['http://wmz-pwnz.ru/sites/default/files/no_avatar.jpg']
     }
-    action.images = action.images
+    action.images = JSON.stringify(action.images);
   })
   Action.hook('beforeUpdate', function (action) {
-    console.log('afterUpdate')
     action.runCompleteTimeout()
   })
   Action.hook('afterSave', function (action) {
