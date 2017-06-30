@@ -6,14 +6,37 @@ export default(ctx) => {
 
   controller.get = async function(req) {
     const actions = await Action.findAll({
-      // where: {
-      //   vipTime: {
-      //     $gte: new Date(),
-      //   },
-      // },
+      where: {
+        vipTime: {
+          $gte: new Date(),
+        },
+      },
     })
     return actions
   }
+
+  controller.getOld = async function(req) {
+    const actions = await Action.findAll({
+      where: {
+        vipTime: {
+          $lt: new Date(),
+        },
+      },
+    })
+    return actions
+  }
+
+  controller.getProductsOther = async function(req) {
+    const actions = await Action.findAll({
+      where: {
+        vipTime: {
+          $eq: null,
+        },
+      },
+    })
+    return actions
+  }
+
   controller.create = async function(req) {
     isAuth(req)
     const params = req.allParams()
@@ -21,7 +44,7 @@ export default(ctx) => {
     params.ownerId = owner.id
     const action = await Action.create(params)
     if (params.fixedWinnerId) {
-      await Ticket.create({ userId: params.fixedWinnerId, actionId: action.id })
+      await Ticket.create({ userId: params.fixedWinnerId, actionId: action.id, price: params.price})
     }
     return action
   }

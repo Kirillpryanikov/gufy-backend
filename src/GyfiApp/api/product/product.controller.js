@@ -27,6 +27,17 @@ export default(ctx) => {
     return products
   }
 
+  controller.getProductsOther = async function(req) {
+    const products = await Product.findAll({
+      where: {
+        vipTime: {
+          $eq: null,
+        },
+      },
+    })
+    return products
+  }
+
   controller.create = async function(req) {
     isAuth(req)
     const params = req.allParams()

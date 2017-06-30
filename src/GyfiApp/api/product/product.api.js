@@ -8,6 +8,7 @@ export default (ctx) => {
   let api = asyncRouter();
   api.get('/', controller.get)
   api.get('/old', controller.getOld)
+  api.get('/other', controller.getProductsOther)
   api.post('/', controller.create)
   api.put('/:id', controller.update)
   api.post('/:id/buy', controller.buy)

@@ -134,7 +134,6 @@ export default function createModel(ctx) {
       toJSON() {
         const action = this.dataValues;
         action.images = this.get('images')
-        console.log('***********************************action.images ', action.images);
         if (action.images && validator.isJSON(action.images)) {
           action.images = this.get('images')
         } else {

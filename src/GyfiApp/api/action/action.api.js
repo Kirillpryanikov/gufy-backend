@@ -8,6 +8,8 @@ export default (ctx) => {
   let api = asyncRouter();
 
   api.get('/', controller.get)
+  api.get('/old', controller.getOld)
+  api.get('/other', controller.getProductsOther)
   api.post('/', controller.create)
   api.get('/:id/users', controller.users)
   api.get('/:id/tickets', controller.tickets)
