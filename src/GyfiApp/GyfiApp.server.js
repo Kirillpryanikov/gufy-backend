@@ -153,6 +153,7 @@ export default class GyfiApp extends ReactApp {
       return filename
     }
     this.helpers.isAuth = function isAuth(req) {
+      console.log(req.headers)
       if (!req.user || !req.user.id) throw errors.e401('!req.user')
     }
     this.helpers._checkNotFound = function _checkNotFound(model = 'Object') {

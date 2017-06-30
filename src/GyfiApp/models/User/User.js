@@ -560,12 +560,16 @@ export default function createModel(ctx) {
         const avatar = this.get('avatar')
         user.age = this.get('age')
         user.gyfi = Number(user.gyfi) || 0
-        user.phoneNumbers = this.get('phoneNumbers')
-        if (typeof user.phoneNumbers === 'string') {
-          user.phoneNumbers = [user.phoneNumbers]
+        if (user.phoneNumbers && typeof user.phoneNumbers === 'string') {
+          user.phoneNumbers = this.get('phoneNumbers')
+          // user.phoneNumbers = [user.phoneNumbers]
         }
         if (avatar) {
-          user.avatar = `${ctx.config.protocol}://${ctx.config.host}${avatar}`
+          // user.avatar = `${ctx.config.protocol}://${ctx.config.host}${avatar}`
+          const path = `${ctx.config.protocol}://${ctx.config.host}`;
+          if (!user.avatar.startsWith(path)) {
+            user.avatar = `${ctx.config.protocol}://${ctx.config.host}/${avatar}`
+          }
         }
         return user
       },

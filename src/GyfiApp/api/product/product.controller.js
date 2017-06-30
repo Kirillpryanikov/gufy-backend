@@ -16,6 +16,17 @@ export default(ctx) => {
     return products
   }
 
+  controller.getOld = async function(req) {
+    const products = await Product.findAll({
+      where: {
+        vipTime: {
+          $lt: new Date(),
+        },
+      },
+    })
+    return products
+  }
+
   controller.create = async function(req) {
     isAuth(req)
     const params = req.allParams()

@@ -27,7 +27,11 @@ export default function createModel(ctx) {
         const category = this.dataValues
         const image = this.get('image')
         if (image) {
-          category.image = `${ctx.config.protocol}://${ctx.config.host}${image}`
+          // category.image = `${ctx.config.protocol}://${ctx.config.host}/${image}`
+          const path = `${ctx.config.protocol}://${ctx.config.host}`;
+          if (!category.image.startsWith(path)) {
+            category.image = `${ctx.config.protocol}://${ctx.config.host}/${image}`
+          }
         }
         return category
       },

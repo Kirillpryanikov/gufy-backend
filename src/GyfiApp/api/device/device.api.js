@@ -1,18 +1,17 @@
+/**
+ * Created by smartit-11 on 29.06.17.
+ */
 import asyncRouter from 'lego-starter-kit/utils/AsyncRouter'
-import getController from './product.controller'
+import getController from './device.controller'
 import wrapper from '../wrapper'
 export default (ctx) => {
+  console.log('T*************************************************************************')
   // const { wrapResourse, createResourse } = ctx.helpers
-  const { Product } = ctx.models
+  const { Device } = ctx.models
   const controller = getController(ctx)
   let api = asyncRouter();
   api.get('/', controller.get)
-  api.get('/old', controller.getOld)
-  api.post('/', controller.create)
-  api.put('/:id', controller.update)
-  api.post('/:id/buy', controller.buy)
-
-  api = wrapper(ctx, { model: Product, api })
+  api = wrapper(ctx, { model: Device, api })
 
 
   return api

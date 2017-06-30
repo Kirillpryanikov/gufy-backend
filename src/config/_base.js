@@ -4,11 +4,10 @@ import path from 'path'
 import { argv } from 'yargs'
 const pkg = require('../../package.json')
 
-
 const config = {
   name: 'Gyfi',
   env : process.env.NODE_ENV || process.env.ENV || 'development',
-  port : process.env.PORT || 8080,
+  port : process.env.PORT || 8081,
   host: 'localhost',
   protocol: 'http',
   // protocol: 'https',

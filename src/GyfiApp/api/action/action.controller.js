@@ -6,11 +6,11 @@ export default(ctx) => {
 
   controller.get = async function(req) {
     const actions = await Action.findAll({
-      where: {
-        vipTime: {
-          $gte: new Date(),
-        },
-      },
+      // where: {
+      //   vipTime: {
+      //     $gte: new Date(),
+      //   },
+      // },
     })
     return actions
   }

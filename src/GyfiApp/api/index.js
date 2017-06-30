@@ -9,6 +9,7 @@ import getPostApi from './post/post.api'
 import getCategoryApi from './category/category.api'
 import getAuthApi from './auth/auth.api'
 import getSocialNetworkApi from './socialNetwork/socialNetwork.api'
+import getDeviceApi from './device/device.api';
 import fileUpload from 'express-fileupload'
 
 export default (ctx, params) => {
@@ -30,6 +31,7 @@ export default (ctx, params) => {
   // api.all('/auth/signup', ctx.resourses.Auth.signup)
   // api.all('/auth/recovery', ctx.resourses.Auth.recovery)
   // Таблицы
+
   api.use('/user', getUserApi(ctx, params))
   api.use('/product', getProductApi(ctx, params))
   api.use('/action', getActionApi(ctx, params))
@@ -38,6 +40,7 @@ export default (ctx, params) => {
   api.use('/post', getPostApi(ctx, params))
   api.use('/category', getCategoryApi(ctx, params))
   api.use('/socialNetwork', getSocialNetworkApi(ctx, params))
+  api.use('/device', getDeviceApi(ctx, params));
   // Все остальное
 
   api.post('/image', fileUpload(), async (req) => {
