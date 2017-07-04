@@ -12,20 +12,20 @@ const config = {
   protocol: 'http',
   // protocol: 'https',
   // host: 'gyfi.mgbeta.ru',
-  sql: {
-    host: 'legend02.mysql.ukraine.com.ua',
-    // port: 10096,
-    password: '2lwxswfy',
-    username: 'legend02_gufy',
-    database: 'legend02_gufy',
-  },
   // sql: {
-  //   host: '92.53.96.16',
-  //   port: undefined,
-  //   password: 'qwe123qwe',
-  //   username: 'ch97432_gyfi',
-  //   database: 'ch97432_gyfi',
+  //   host: 'legend02.mysql.ukraine.com.ua',
+  //   // port: 10096,
+  //   password: '2lwxswfy',
+  //   username: 'legend02_gufy',
+  //   database: 'legend02_gufy',
   // },
+  sql: {
+    host: 's3.mgbeta.ru',
+    port: 10096,
+    password: 'NdhgpGh3ODNXYZd0zPZc',
+    username: 'mgbeta',
+    database: 'mgbeta',
+  },
   social: {
     vk: {
       clientID: '5717694',
