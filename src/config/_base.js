@@ -8,7 +8,7 @@ const config = {
   name: 'Gyfi',
   env : process.env.NODE_ENV || process.env.ENV || 'development',
   port : process.env.PORT || 8081,
-  host: 'localhost',
+  host: '185.65.247.3',
   protocol: 'http',
   // protocol: 'https',
   // host: 'gyfi.mgbeta.ru',
