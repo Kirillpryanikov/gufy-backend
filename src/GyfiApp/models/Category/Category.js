@@ -38,7 +38,9 @@ export default function createModel(ctx) {
       async updateProductsCount() {
         const { Product } = ctx.models
         const count = await Product.count({
-          categoryId: this.get('id'),
+          where: {
+            categoryId: this.get('id'),
+          },
         })
         this.productsCount = count
         return this.save()
