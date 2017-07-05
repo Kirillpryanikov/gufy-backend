@@ -111,6 +111,16 @@ export default function createModel(ctx) {
       }
     })
   })
+
+  Product.hook('afterDestroy', function (product) {
+    ctx.models.Category.findById(product.get('categoryId'))
+    .then(category => {
+      if (category && category.updateProductsCount) {
+        return category.updateProductsCount()
+      }
+    })
+  })
+
   ctx.models.Product = Product
   return Product
 }
