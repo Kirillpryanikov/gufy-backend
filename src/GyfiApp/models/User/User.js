@@ -449,7 +449,7 @@ export default function createModel(ctx) {
             userId: this.get('id'),
           },
         })
-        if (!wall || !wall.getPosts) {
+        if (!wall || !wall.getPosts()) {
           return null
         }
         return wall
@@ -571,6 +571,7 @@ export default function createModel(ctx) {
             user.avatar = `${ctx.config.protocol}://${ctx.config.host}/${avatar}`
           }
         }
+          console.log('$$$$$$$$$$$  -->>> test >>>> ', user.network)
         return user
       },
     },

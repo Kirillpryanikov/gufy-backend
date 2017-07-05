@@ -13,8 +13,10 @@ export default function createModel(ctx) {
       async getPosts() {
         const { Post } = ctx.models
         return Post.findAll({
-          wallId: this.get('id'),
-        })
+          where: {
+            wallId: this.get('id'),
+          },
+        });
       },
       async getUser() {
         const { User } = ctx.models
