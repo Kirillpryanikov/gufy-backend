@@ -52,6 +52,7 @@ export default function createModel(ctx) {
     },
     vipTime: {
       type: Sequelize.DATE,
+      required: true,
       defaultValue: null,
     },
     vip: {
