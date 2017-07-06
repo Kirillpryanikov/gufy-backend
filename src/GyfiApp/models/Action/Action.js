@@ -38,8 +38,7 @@ export default function createModel(ctx) {
     images: sequelize.jsonField(sequelize, 'action', 'images'),
     finishedAt: {
       type: Sequelize.DATE,
-      required: true,
-      allowNull: false,
+      defaultValue: null,
     },
     status: {
       type: Sequelize.ENUM,
