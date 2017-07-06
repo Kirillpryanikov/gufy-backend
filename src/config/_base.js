@@ -12,13 +12,13 @@ const config = {
   protocol: 'http',
   // protocol: 'https',
   // host: 'gyfi.mgbeta.ru',
-//  sql: {
+  // sql: {
   //  host: 'legend02.mysql.ukraine.com.ua',
-    // port: 10096,
-   // password: '2lwxswfy',
-   // username: 'legend02_gufy',
-   // database: 'legend02_gufy',
- // },
+  //  // port: 10096,
+  //  password: '2lwxswfy',
+  //  username: 'legend02_gufy',
+  //  database: 'legend02_gufy',
+  // },
    sql: {
      host: 's3.mgbeta.ru',
      port: 10096,

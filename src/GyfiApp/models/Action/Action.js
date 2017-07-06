@@ -137,12 +137,13 @@ export default function createModel(ctx) {
         if (action.images && validator.isJSON(action.images)) {
           action.images = this.get('images')
         } else {
-          action.images = [];
+          action.images = []
         }
         if (Array.isArray(action.images)) {
           action.images = action.images.map(image => {
-            if (image && image[0] === '/') {
-              image = ctx.config.url + image
+            image = image.replace(new RegExp('"', 'g'), '');
+            if (image) {
+              image = `${ctx.config.url}/${image}`;
             }
             return image
           })
