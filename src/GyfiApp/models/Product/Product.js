@@ -75,7 +75,8 @@ export default function createModel(ctx) {
         const product = this.dataValues
         product.vip = this.get('vip')
         product.images = this.get('images')
-        if (product.images && validator.isJSON(product.images)) {
+        product.images = transformationStringIntoArray(product.images);
+        if (product.images) {
           product.images = this.get('images')
         } else {
           product.images = []
@@ -124,4 +125,12 @@ export default function createModel(ctx) {
 
   ctx.models.Product = Product
   return Product
+}
+
+function transformationStringIntoArray(array) {
+  array = array.replace(/\[|\]/g, '');
+  array = array.replace(/"/g, '');
+  array = array.replace(/\\/g, '');
+  array = array.split(',');
+  return array;
 }

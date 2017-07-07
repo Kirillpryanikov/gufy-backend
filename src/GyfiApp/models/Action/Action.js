@@ -134,7 +134,8 @@ export default function createModel(ctx) {
       toJSON() {
         const action = this.dataValues;
         action.images = this.get('images')
-        if (action.images && validator.isJSON(action.images)) {
+        action.images = transformationStringIntoArray(action.images);
+        if (action.images) {
           action.images = this.get('images')
         } else {
           action.images = []
@@ -176,4 +177,12 @@ export default function createModel(ctx) {
   })
   ctx.models.Action = Action
   return Action
+}
+
+function transformationStringIntoArray(array) {
+  array = array.replace(/\[|\]/g, '');
+  array = array.replace(/"/g, '');
+  array = array.replace(/\\/g, '');
+  array = array.split(',');
+  return array;
 }
