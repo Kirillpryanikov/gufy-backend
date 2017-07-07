@@ -171,6 +171,22 @@ export default function createModel(ctx) {
   Action.hook('afterCreate', function (action) {
     action.runCompleteTimeout()
     action.updateUserActionsCount()
+    ctx.models.User.findById(action.get('ownerId'))
+      .then(user => {
+        if (user && user.updateActionsCount) {
+          return user.updateActionsCount()
+        }
+      })
+  })
+  Action.hook('afterDestroy', function (action) {
+    action.runCompleteTimeout()
+    action.updateUserActionsCount()
+    ctx.models.User.findById(action.get('ownerId'))
+      .then(user => {
+        if (user && user.updateActionsCount) {
+          return user.updateActionsCount()
+        }
+      })
   })
   Action.beforeDestroy(function (action) {
     return action.stopCompleteTimeout()

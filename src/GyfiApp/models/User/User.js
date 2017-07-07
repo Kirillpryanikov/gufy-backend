@@ -479,13 +479,14 @@ export default function createModel(ctx) {
         })
       },
       async updateProductsCount() {
-        const products = await this.getProducts()
-        if (!products) {
-          this.productsCount = 0
-        } else {
-          this.productsCount = products.length || 0
-        }
-        return this
+        const { Product } = ctx.models
+        const count = await Product.count({
+          where: {
+            ownerId: this.get('id')
+          },
+        });
+        this.productsCount = count;
+        return this.save()
       },
       async addNewDevice(params) {
         const { Device } = ctx.models
@@ -534,7 +535,9 @@ export default function createModel(ctx) {
       async updateActionsCount() {
         const { Action } = ctx.models
         const actionsCount = await Action.count({
-          ownerId: this.get('id'),
+          where: {
+            ownerId: this.get('id'),
+          },
         })
         this.actionsCount = actionsCount
         return this.save()
@@ -542,7 +545,9 @@ export default function createModel(ctx) {
       async updateActionWinsCount() {
         const { Action } = ctx.models
         const actionWinsCount = await Action.count({
-          winnerId: this.get('id'),
+          where: {
+            winnerId: this.get('id'),
+          },
         })
         this.actionWinsCount = actionWinsCount
         return this.save()
@@ -550,7 +555,9 @@ export default function createModel(ctx) {
       async updateBuysCount() {
         const { Product } = ctx.models
         const buysCount = await Product.count({
-          buyerId: this.get('id'),
+          where: {
+            buyerId: this.get('id'),
+          },
         })
         this.buysCount = buysCount
         return this.save()
@@ -571,7 +578,6 @@ export default function createModel(ctx) {
             user.avatar = `${ctx.config.protocol}://${ctx.config.host}/${avatar}`
           }
         }
-          console.log('$$$$$$$$$$$  -->>> test >>>> ', user.network)
         return user
       },
     },

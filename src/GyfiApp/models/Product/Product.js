@@ -111,7 +111,13 @@ export default function createModel(ctx) {
       if (category && category.updateProductsCount) {
         return category.updateProductsCount()
       }
-    })
+    });
+    ctx.models.User.findById(product.get('ownerId'))
+      .then(user => {
+        if (user && user.updateProductsCount) {
+          return user.updateProductsCount()
+        }
+      })
   })
 
   Product.hook('afterDestroy', function (product) {
@@ -120,7 +126,13 @@ export default function createModel(ctx) {
       if (category && category.updateProductsCount) {
         return category.updateProductsCount()
       }
-    })
+    });
+    ctx.models.User.findById(product.get('ownerId'))
+      .then(user => {
+        if (user && user.updateProductsCount) {
+          return user.updateProductsCount()
+        }
+      })
   })
 
   ctx.models.Product = Product
