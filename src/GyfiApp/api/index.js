@@ -48,7 +48,7 @@ export default (ctx, params) => {
       const { image } = req.files
       const filename = await ctx.helpers.saveFile(`${new Date().getTime()}`, image)
       return {
-        fullPath: `${ctx.config.protocol}://${ctx.config.host}/${filename}`,
+        fullPath: `${ctx.config.protocol}://${ctx.config.host}/storage/${filename}`,
         path: `${filename}`,
       }
     } else {
@@ -66,7 +66,7 @@ export default (ctx, params) => {
       name += `_${new Date().getTime()}`
       const filename = await ctx.helpers.saveFile(name, file)
       return {
-        fullPath: `${ctx.config.protocol}://${ctx.config.host}/${filename}`,
+        fullPath: `${ctx.config.protocol}://${ctx.config.host}/storage/${filename}`,
         path: `${filename}`,
       }
     } else {

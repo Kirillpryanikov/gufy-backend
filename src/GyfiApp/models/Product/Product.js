@@ -84,7 +84,7 @@ export default function createModel(ctx) {
           product.images = product.images.map(image => {
             image = image.replace(new RegExp('"', 'g'), '');
             if (image) {
-              image = `${ctx.config.url}/${image}`;
+              image = `${ctx.config.url}/storage/${image}`;
             }
             return image
           })
