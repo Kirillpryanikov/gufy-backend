@@ -162,6 +162,12 @@ export default function createModel(ctx) {
     }
     action.images = JSON.stringify(action.images);
   })
+  Action.hook('beforeCreate', function (action) {
+    if (!action.vipTime) {
+      const currentDate = new Date();
+      action.vipTime = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1));
+    }
+  })
   Action.hook('beforeUpdate', function (action) {
     action.runCompleteTimeout()
   })
