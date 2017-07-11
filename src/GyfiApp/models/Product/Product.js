@@ -105,6 +105,13 @@ export default function createModel(ctx) {
     product.images = JSON.stringify(product.images);
   })
 
+  Product.hook('beforeCreate', function (product) {
+    if (!product.vipTime) {
+      const currentDate = new Date();
+      product.vipTime = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1));
+    }
+  })
+
   Product.hook('afterCreate', function (product) {
     ctx.models.Category.findById(product.get('categoryId'))
     .then(category => {
