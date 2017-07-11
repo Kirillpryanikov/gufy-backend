@@ -80,9 +80,9 @@ export default(ctx) => {
         userIds.push(ticket.userId)
       }
     })
-    if (userIds.length === 0) {
-      userIds.push(action.ownerId)
-    }
+    // if (userIds.length === 0) {
+    //   userIds.push(action.ownerId)
+    // }
     return userIds
   }
 
