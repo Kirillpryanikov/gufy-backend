@@ -65,7 +65,10 @@ export default function createModel(ctx) {
       defaultValue: false,
       allowNull: false,
     },
-    phoneNumbers: sequelize.jsonField(sequelize, 'user', 'phoneNumbers'),
+    // phoneNumbers: sequelize.jsonField(sequelize, 'user', 'phoneNumbers'),
+    phoneNumbers: {
+      type: Sequelize.STRING,
+    },
     city: {
       type: Sequelize.STRING,
       allowNull: true,
@@ -567,10 +570,11 @@ export default function createModel(ctx) {
         const avatar = this.get('avatar')
         user.age = this.get('age')
         user.gyfi = Number(user.gyfi) || 0
-        if (user.phoneNumbers && typeof user.phoneNumbers === 'string') {
-          user.phoneNumbers = this.get('phoneNumbers')
-          // user.phoneNumbers = [user.phoneNumbers]
-        }
+        // if (user.phoneNumbers && typeof user.phoneNumbers === 'string') {
+        //
+        //   user.phoneNumbers = this.get('phoneNumbers')
+        //   user.phoneNumbers = [user.phoneNumbers]
+        // }
         if (avatar) {
           // user.avatar = `${ctx.config.protocol}://${ctx.config.host}${avatar}`
           const path = `${ctx.config.protocol}://${ctx.config.host}`;
