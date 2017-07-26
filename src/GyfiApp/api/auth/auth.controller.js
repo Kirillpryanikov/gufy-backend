@@ -6,10 +6,10 @@ export default (ctx) => {
   const controller = {}
   const socialService = getSocialService(ctx)
   const validateService = getValidateService(ctx)
-  const { User, SocialNetwork, Wall } = ctx.models
+  const { User, SocialNetwork, Wall, Values } = ctx.models
   controller.signup = async (req) => {
     const params = req.allParams()
-    const { token, socialNetworkId, socialNetworkType } = params
+    const { token, socialNetworkId, socialNetworkType, referal } = params
     if (!token) {
       throw e400('access_token is not found')
     }
@@ -53,6 +53,19 @@ export default (ctx) => {
       subject: 'Регистрация на сайте',
       text: 'Поздравляем с регистрацией',
     }
+
+    if (referal) {
+      const price = await Values.find({
+        where: {
+          name: 'referal-id',
+        },
+      });
+      const inviterUser = await User.findById(referal);
+      inviterUser.gyfi += parseInt(price.value, 10);
+      user.gyfi += price;
+      inviterUser.save();
+    }
+
     user.sendEmail(emailOptions)
     return {
       user,

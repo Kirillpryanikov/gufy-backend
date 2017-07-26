@@ -7,6 +7,7 @@ import getActionDocs from './action/action.docs'
 import getTicketDocs from './ticket/ticket.docs'
 import getWallDocs from './wall/wall.docs'
 import getPostDocs from './post/post.docs'
+import getValuesDocs from './values/values.docs'
 // import getActionDocs from './action/action.docs'
 export default function getDocs(ctx, params) {
   const userDocs = getUserDocs(ctx)
@@ -17,6 +18,7 @@ export default function getDocs(ctx, params) {
   const ticketDocs = getTicketDocs(ctx)
   const wallDocs = getWallDocs(ctx)
   const postDocs = getPostDocs(ctx)
+  const valueDocs = getValuesDocs(ctx);
   const docs = Object.assign({
     "swagger": "2.0",
     "info": {
@@ -28,8 +30,8 @@ export default function getDocs(ctx, params) {
     ],
     "basePath": "/v1",
     "produces": ["application/json"],
-    "paths": Object.assign(userDocs.paths, authDocs.paths, productDocs.paths, categoryDocs.paths, actionDocs.paths, ticketDocs.paths, wallDocs.paths, postDocs.paths),
-    "definitions": Object.assign(userDocs.definitions, authDocs.definitions, productDocs.definitions, categoryDocs.definitions, actionDocs.definitions, ticketDocs.definitions, wallDocs.definitions, postDocs.definitions)
+    "paths": Object.assign(userDocs.paths, authDocs.paths, productDocs.paths, categoryDocs.paths, actionDocs.paths, ticketDocs.paths, wallDocs.paths, postDocs.paths, valueDocs.paths),
+    "definitions": Object.assign(userDocs.definitions, authDocs.definitions, productDocs.definitions, categoryDocs.definitions, actionDocs.definitions, ticketDocs.definitions, wallDocs.definitions, postDocs.definitions, valueDocs.definitions)
 
   }, params)
   return docs

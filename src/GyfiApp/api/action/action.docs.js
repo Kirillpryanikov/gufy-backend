@@ -291,6 +291,43 @@ export default(ctx, parent) => {
         }
       },
     },
+    '/action/{id}/extend-time': {
+      'parameters':[
+        {
+          'name': 'id',
+          'in': 'path',
+          'description':'id',
+          'required': true,
+          'type': 'string',
+        },
+        {
+          'name': 'userId',
+          'in': 'path',
+          'description':'user Id',
+          'required': true,
+          'type': 'string',
+        },
+        {
+          'name': 'hours',
+          'in': 'path',
+          'description':'count hours',
+          'required': true,
+          'type': 'number',
+        }
+      ],
+      'post': {
+        'summary': 'Продлить Vip Time для action',
+        'tags': ['action'],
+        'responses': {
+          '200': {
+            'description': 'Акция',
+            'schema': {
+              '$ref': '#/definitions/Action'
+            }
+          }
+        }
+      },
+    }
   }
 
   const definitions = {

@@ -12,6 +12,7 @@ export default (ctx) => {
   api.post('/', controller.create)
   api.put('/:id', controller.update)
   api.post('/:id/buy', controller.buy)
+  api.post('/:id/extend-time', controller.extendVipTime)
 
   api = wrapper(ctx, { model: Product, api })
 

@@ -1,5 +1,5 @@
 export default(ctx) => {
-  const { User, Action, Ticket } = ctx.models
+  const { User, Action, Ticket, Values } = ctx.models
   const { checkNotFound, isAuth, _checkNotFound } = ctx.helpers
   const { e400 } = ctx.errors
   const controller = {}
@@ -100,6 +100,30 @@ export default(ctx) => {
     const action = await Action.findById(id)
     return action.complete()
   }
+
+  controller.extendVipTime = async function (req) {
+    const params = req.allParams()
+    const { id, hours, userId } = params;
+    const price = await Values.find({
+      where: {
+        name: 'vip-time',
+      },
+    });
+    const user = await User.findById(userId).then(checkNotFound);
+    const costGyfi = price.value * hours;
+
+    if (user.gyfi < costGyfi) {
+      throw e400('У вас недостаточно валюты')
+    }
+    const action = await Action.findById(id)
+    user.gyfi -= costGyfi;
+    action.vipTime = await new Date(action.vipTime).setHours(action.vipTime.getHours() + hours);
+
+    user.save();
+    action.save();
+
+    return action;
+  };
 
   return controller
 }

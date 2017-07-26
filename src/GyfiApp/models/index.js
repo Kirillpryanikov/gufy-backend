@@ -12,6 +12,7 @@ export default function () {
     SocialNetwork: require('./SocialNetwork').default(...arguments),
     Device: require('./Device').default(...arguments),
     Message: require('./Message').default(...arguments),
+    Values: require('./Values').default(...arguments),
   }
   return setAssociations(models)
 }

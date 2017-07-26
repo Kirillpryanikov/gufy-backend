@@ -2,7 +2,7 @@ import _ from 'lodash'
 export default(ctx) => {
   const controller = {}
   const { _checkNotFound, checkNotFound, isAuth } = ctx.helpers
-  const { Product, User } = ctx.models
+  const { Product, User, Values } = ctx.models
   const { e400 } = ctx.errors
 
   controller.get = async function(req) {
@@ -90,5 +90,33 @@ export default(ctx) => {
 
     return product
   }
+
+  controller.extendVipTime = async function (req) {
+    const params = req.allParams()
+    const { id, hours, userId } = params;
+    const price = await Values.find({
+      where: {
+        name: 'vip-time',
+      },
+    });
+    const user = await User.findById(userId).then(checkNotFound);
+    const costGyfi = price.value * hours;
+
+    if (user.gyfi < costGyfi) {
+      throw e400('У вас недостаточно валюты')
+    }
+    const product = await Product.findById(id)
+    user.gyfi -= costGyfi;
+    product.vipTime = await new Date(product.vipTime).setHours(product.vipTime.getHours() + hours);
+
+    user.save();
+    product.save();
+
+    return product;
+  };
+
+
+
+
   return controller
 }
