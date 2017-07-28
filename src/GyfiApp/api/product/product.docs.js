@@ -205,13 +205,6 @@ export default(ctx, parent) => {
           'type': 'string',
         },
         {
-          'name': 'userId',
-          'in': 'path',
-          'description':'user Id',
-          'required': true,
-          'type': 'string',
-        },
-        {
           'name': 'hours',
           'in': 'path',
           'description':'count hours',
@@ -219,7 +212,7 @@ export default(ctx, parent) => {
           'type': 'number',
         }
       ],
-      'post': {
+      'put': {
         'summary': 'Продлить Vip Time для продукта',
         'tags': ['product'],
         'responses': {

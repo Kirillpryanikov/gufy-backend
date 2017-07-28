@@ -15,7 +15,7 @@ export default (ctx) => {
   api.get('/:id/tickets', controller.tickets)
   api.post('/:id/join', controller.join)
   api.post('/:id/complete', controller.complete)
-  api.post('/:id/extend-time', controller.extendVipTime)
+  api.put('/:id/extend-time', controller.extendVipTime)
 
   api = wrapper(ctx, { model: Action, api })
 
