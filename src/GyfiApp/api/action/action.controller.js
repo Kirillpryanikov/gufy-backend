@@ -1,3 +1,6 @@
+
+var jwt = require('jsonwebtoken');
+
 export default(ctx) => {
   const { User, Action, Ticket, Values } = ctx.models
   const { checkNotFound, isAuth, _checkNotFound } = ctx.helpers
@@ -102,14 +105,16 @@ export default(ctx) => {
   }
 
   controller.extendVipTime = async function (req) {
+    const token = req.headers['x-access-token'];
+    const userObj = jwt.verify(token, ctx.config.jwt.secret);
     const params = req.allParams()
-    const { id, hours, userId } = params;
+    const { id, hours } = params;
     const price = await Values.find({
       where: {
         name: 'vip-time',
       },
     });
-    const user = await User.findById(userId).then(checkNotFound);
+    const user = await User.findById(userObj.id).then(checkNotFound);
     const costGyfi = price.value * hours;
 
     if (user.gyfi < costGyfi) {

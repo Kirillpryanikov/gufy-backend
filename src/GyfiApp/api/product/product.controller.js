@@ -1,4 +1,6 @@
+var jwt = require('jsonwebtoken');
 import _ from 'lodash'
+
 export default(ctx) => {
   const controller = {}
   const { _checkNotFound, checkNotFound, isAuth } = ctx.helpers
@@ -93,13 +95,17 @@ export default(ctx) => {
 
   controller.extendVipTime = async function (req) {
     const params = req.allParams()
-    const { id, hours, userId } = params;
+    const { id, hours } = params;
+
+    const token = req.headers['x-access-token'];
+    const userObj = jwt.verify(token, ctx.config.jwt.secret);
+
     const price = await Values.find({
       where: {
         name: 'vip-time',
       },
     });
-    const user = await User.findById(userId).then(checkNotFound);
+    const user = await User.findById(userObj.id).then(checkNotFound);
     const costGyfi = price.value * hours;
 
     if (user.gyfi < costGyfi) {
