@@ -11,6 +11,8 @@ import getAuthApi from './auth/auth.api'
 import getSocialNetworkApi from './socialNetwork/socialNetwork.api'
 import getDeviceApi from './device/device.api';
 import getValuesApi from './values/values.api';
+import getValuesScretchPrize from './scratch-game/scratch-game.api';
+
 import fileUpload from 'express-fileupload'
 
 export default (ctx, params) => {
@@ -43,6 +45,7 @@ export default (ctx, params) => {
   api.use('/socialNetwork', getSocialNetworkApi(ctx, params))
   api.use('/device', getDeviceApi(ctx, params));
   api.use('/value', getValuesApi(ctx, params));
+  api.use('/scratch', getValuesScretchPrize(ctx, params));
   // Все остальное
 
   api.post('/image', fileUpload(), async (req) => {

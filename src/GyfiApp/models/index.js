@@ -13,6 +13,8 @@ export default function () {
     Device: require('./Device').default(...arguments),
     Message: require('./Message').default(...arguments),
     Values: require('./Values').default(...arguments),
+    ScratchGamePrize: require('./ScratchGamePrize').default(...arguments),
+    ScratchGameHistory: require('./ScratchGameHistory').default(...arguments),
   }
   return setAssociations(models)
 }
