@@ -164,8 +164,8 @@ export default function createModel(ctx) {
   })
   Action.hook('beforeCreate', function (action) {
     if (!action.vipTime) {
-      const currentDate = new Date();
-      action.vipTime = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1));
+      const nextDay = new Date(Date.now() + 86400000);
+      action.vipTime =  new Date(Date.UTC(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate() , nextDay.getHours(), nextDay.getMinutes()))
     }
   })
   Action.hook('beforeUpdate', function (action) {

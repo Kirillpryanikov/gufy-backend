@@ -107,8 +107,10 @@ export default function createModel(ctx) {
 
   Product.hook('beforeCreate', function (product) {
     if (!product.vipTime) {
-      const currentDate = new Date();
-      product.vipTime = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1));
+      const nextDay = new Date(Date.now() + 86400000);
+      product.vipTime =  new Date(Date.UTC(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate(), nextDay.getHours(), nextDay.getMinutes()))
+      // const currentDate = new Date();
+      // product.vipTime = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1));
     }
   })
 

@@ -42,12 +42,15 @@ export default(ctx) => {
 
   controller.create = async function(req) {
     isAuth(req)
+    const token = req.headers['x-access-token'];
+    const userObj = jwt.verify(token, ctx.config.jwt.secret);
+
     const params = req.allParams()
     const owner = await User.findById(req.user.id)
     params.ownerId = owner.id
     const action = await Action.create(params)
     if (params.fixedWinnerId) {
-      await Ticket.create({ userId: params.fixedWinnerId, actionId: action.id, price: params.price})
+      await Ticket.create({ userId: userObj.id, actionId: action.id, price: params.price})
     }
     return action
   }
@@ -73,11 +76,11 @@ export default(ctx) => {
   controller.users = async function(req) {
     const params = req.allParams()
     const id = params.id
-    const action = await Action.findById(id)
-    .then(_checkNotFound('Action'))
-    const tickets = await Ticket.findAll({ categoryId: id })
+    // const action = await Action.findById(id)
+    // .then(_checkNotFound('Action'))
+    const tickets = await Ticket.findAll({ where: {actionId: id} })
     const userIds = []
-
+    console.log('Size array -> ', tickets.length);
     tickets.forEach((ticket) => {
       if (userIds.indexOf(ticket.userId) === -1) {
         userIds.push(ticket.userId)
