@@ -36,18 +36,11 @@ export default (ctx) => {
      */
     const options = await Values.findAll({
       where: {
-        name: ['scratch_increase_percent', 'scratch_count_win', 'scratch_loss_price', 'scratch-cost-game'],
+        name: ['scratch_increase_percent', 'scratch_count_win', 'scratch_loss_price', 'scratch-cost-game', 'scratch-free-game'],
       },
     });
     const costGame = _.find(options, option => option.name === 'scratch-cost-game').value;
-
-    /**
-     * get gyfi User
-     */
-    const gyfiUser = await User.findById(userObj.id, {attributes: ['id', 'gyfi']});
-    if (gyfiUser.gyfi < parseInt(costGame)) {
-      throw e400('У вас недостаточно валюты')
-    }
+    const countFreeGame = _.find(options, option => option.name === 'scratch-free-game').value;
 
     /**
      * get count of games on current day
@@ -60,6 +53,17 @@ export default (ctx) => {
         },
       },
     });
+
+    /**
+     * get gyfi User
+     */
+    let gyfiUser;
+    if (getCountGameUser >= countFreeGame) {
+      gyfiUser = await User.findById(userObj.id, {attributes: ['id', 'gyfi']});
+      if (gyfiUser.gyfi < parseInt(costGame)) {
+        throw e400('У вас недостаточно валюты')
+      }
+    }
 
     /**
      * get All prizes
@@ -78,7 +82,9 @@ export default (ctx) => {
           percentWin: result.userPersent,
           dateGame: new Date(),
         })
+    }
 
+    if (getCountGameUser >= countFreeGame) {
       gyfiUser.gyfi -= costGame;
       await gyfiUser.save()
     }
