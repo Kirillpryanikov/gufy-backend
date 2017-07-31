@@ -10,6 +10,8 @@ export default function createModel(ctx) {
   const ScratchGameHistory = sequelize.define('scratch-game-history', {
     userId: {
       type: Sequelize.INTEGER,
+      references:'users',
+      referencesKey: 'id',
       required: true,
       allowNull: false,
     },
@@ -18,11 +20,9 @@ export default function createModel(ctx) {
       required: true,
       allowNull: false,
     },
-    isWin: {
-      type: Sequelize.BOOLEAN,
-    },
     dateGame: {
       type: Sequelize.DATE,
+      required: true,
       default: new Date(),
     },
     percentWin: {

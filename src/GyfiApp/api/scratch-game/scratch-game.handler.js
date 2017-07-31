@@ -4,7 +4,23 @@ export default (ctx) => {
 
   const handler = {};
 
-  handler.getRandomPrize = (array) => {
+  handler.getRandomPrize = async (array, countGame, values) => {
+    let userPersent = 100;
+
+    /**
+     * Increase the chance of losing
+     */
+    if (countGame >= _.find(values, value => value.name === 'scratch_count_win').value) {
+      userPersent = _.find(values, value => value.name === 'scratch_increase_percent').value;
+
+      _.find(array, item => {
+        if (item.name === _.find(values, value => value.name === 'scratch_loss_price').value) {
+          let proc = parseInt(userPersent) / 100;
+          item.weightVictory = (item.weightVictory * proc) + item.weightVictory;
+        }
+      });
+    }
+
     let prizes = [];
     _.find(array, (item, index) => {
       prizes.push({
@@ -16,50 +32,62 @@ export default (ctx) => {
     prizes = prizes.sort(function(a, b) {
       return a.weight - b.weight;
     });
-    const random = Math.random() * (0, _.last(prizes).weight + 1);
-    return array[_.find(prizes, prize => prize.weight >= random).index]
+    const totalWeight = _.last(prizes).weight;
+    const random = Math.random() * (0, totalWeight);
+
+    /**
+     * Random selection prize
+     */
+    let winPrize = array[_.find(prizes, prize => prize.weight >= random).index];
+    if (!winPrize.isAvaible) {
+      winPrize = getAvalibleGyfiPrize(array);
+    }
+    return generatePrizes(array, winPrize.id, userPersent);
   };
 
+  function generatePrizes(array, prizeId, userPersent) {
+    let res = [];
+    const winPrize = _.remove(array, item => item.id === prizeId);
+    res.push(winPrize[0]);
+
+    array = _.shuffle(array);
+    _.find(array, (item, i) => {
+      if (i < 4) {
+        res.push(array.pop());
+      }
+    });
+    res = _.flatMap(res, dublicate);
+
+    /**
+     * Winning prizes should be 3
+     */
+    res.push(winPrize[0]);
+
+    /**
+     * add 12 prize
+     */
+    if (array.length > 0) {
+      res.push(array.pop());
+    }
+
+    return {
+        prizes: _.shuffle(res),
+        idPrize: prizeId,
+        userPersent: userPersent,
+    }
+  }
+
+  function dublicate(n) {
+    return [n, n]
+  }
+
+  function getAvalibleGyfiPrize(array) {
+    array = array.sort(function(a, b) {
+      return b.weightVictory - a.weightVictory;
+    });
+    const prize = _.find(array, item => item.isGyfi && item.isAvaible);
+    return prize;
+  }
 
   return handler;
 }
-
-
-
-
-
-// var arr = [0.902, 0.22, 2.2, 0.88, 25, 0.12, 30.1]
-//
-// var res = [];
-//
-// arrNew = [];
-// for(var i=0; i<arr.length; i++){
-//   if(arrNew.length == 0){
-//
-//     arrNew.push({index: i, value: arr[0],  old:arr[i]})
-//
-//   } else {
-//
-//     arrNew.push({index: i, value: (arr[i] + arrNew[i-1].value), old:arr[i]})
-//
-//   }
-// }
-// arrNew.sort();
-// var total = arr.reduce(function(a, b){
-//   return a+b;
-// });
-//
-// for(var j=0; j<10; j++){
-//   var randomValue = Math.random() * (0, total + 1);
-//   console.log('randomValue ', randomValue)
-//
-//   for(var i = 0; i< arrNew.length; i++){
-//     if(arrNew[i].value >= randomValue){
-//       res.push(arrNew[i].old);
-//       break;
-//     }
-//   }
-// }
-//
-//
-// console.log('res 1', res)

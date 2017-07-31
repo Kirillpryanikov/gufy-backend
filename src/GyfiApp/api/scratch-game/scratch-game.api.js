@@ -10,7 +10,7 @@ export default (ctx) => {
 
   api.get('/', controller.getPrizes);
   api.post('/', controller.create);
-  api.get('/prize', controller.getRandomPrize);
+  api.get('/prizes', controller.getRandomPrizes);
 
   api = wrapper(ctx, { model: ScratchGamePrize, api })
 

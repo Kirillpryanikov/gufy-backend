@@ -29,6 +29,13 @@ export default function createModel(ctx) {
     isAvaible: {
       type: Sequelize.BOOLEAN,
     },
+    isGyfi: {
+      type: Sequelize.BOOLEAN,
+      default: true,
+    },
+    description: {
+      type: Sequelize.STRING,
+    },
   })
 
   ctx.models.ScratchGamePrize = ScratchGamePrize
