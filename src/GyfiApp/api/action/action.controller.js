@@ -42,18 +42,25 @@ export default(ctx) => {
 
   controller.create = async function(req) {
     isAuth(req)
-    const token = req.headers['x-access-token'];
-    const userObj = jwt.verify(token, ctx.config.jwt.secret);
+    // const token = req.headers['x-access-token'];
+    // const userObj = jwt.verify(token, ctx.config.jwt.secret);
 
     const params = req.allParams()
     const owner = await User.findById(req.user.id)
-    params.ownerId = owner.id
-    const action = await Action.create(params)
-    if (params.fixedWinnerId) {
-      await Ticket.create({ userId: userObj.id, actionId: action.id, price: params.price})
+    params.ownerId = owner.id;
+    if (params.vipTime) {
+      const addTime = (parseFloat(params.vipTime) * 3600000) + 86400000;
+      const nextDay = new Date(Date.now() + addTime);
+      params.vipTime =  new Date(Date.UTC(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate(), nextDay.getHours(), nextDay.getMinutes()))
     }
+
+    const action = await Action.create(params)
+    // if (params.fixedWinnerId) {
+    //   await Ticket.create({ userId: userObj.id, actionId: action.id, price: params.price})
+    // }
     return action
   }
+
   controller.join = async function(req) {
     isAuth(req)
     const params = req.allParams()
