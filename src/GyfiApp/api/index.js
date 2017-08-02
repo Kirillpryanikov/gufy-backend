@@ -44,7 +44,7 @@ export default (ctx, params) => {
   api.use('/category', getCategoryApi(ctx, params))
   api.use('/socialNetwork', getSocialNetworkApi(ctx, params))
   api.use('/device', getDeviceApi(ctx, params));
-  api.use('/value', getValuesApi(ctx, params));
+  api.use('/option', getValuesApi(ctx, params));
   api.use('/scratch', getValuesScretchPrize(ctx, params));
   // Все остальное
 

@@ -23,10 +23,13 @@ export default (ctx) => {
 
     let prizes = [];
     _.find(array, (item, index) => {
-      prizes.push({
-        index,
-        weight: index === 0 ? item["weightVictory"] : array[index].weightVictory + prizes[index - 1].weight,
-      })
+      if (item.isAvaible){
+        prizes.push({
+          index,
+          weight: prizes.length === 0 ? item["weightVictory"] : array[index].weightVictory + prizes[prizes.length - 1].weight,
+          isGyfi: item.isGyfi,
+        })
+      }
     });
 
     prizes = prizes.sort(function(a, b) {
@@ -34,14 +37,10 @@ export default (ctx) => {
     });
     const totalWeight = _.last(prizes).weight;
     const random = Math.random() * (0, totalWeight);
-
     /**
      * Random selection prize
      */
     let winPrize = array[_.find(prizes, prize => prize.weight >= random).index];
-    if (!winPrize.isAvaible) {
-      winPrize = getAvalibleGyfiPrize(array);
-    }
     return generatePrizes(array, winPrize.id, userPersent);
   };
 
@@ -73,20 +72,12 @@ export default (ctx) => {
     return {
         prizes: _.shuffle(res),
         idPrize: prizeId,
-        userPersent: userPersent,
+        userPersent: 100 - userPersent,
     }
   }
 
   function dublicate(n) {
     return [n, n]
-  }
-
-  function getAvalibleGyfiPrize(array) {
-    array = array.sort(function(a, b) {
-      return b.weightVictory - a.weightVictory;
-    });
-    const prize = _.find(array, item => item.isGyfi && item.isAvaible);
-    return prize;
   }
 
   return handler;

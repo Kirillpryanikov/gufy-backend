@@ -10,6 +10,7 @@ export default (ctx) => {
 
   api.get('/', controller.getValues);
   api.put('/:id', controller.updateValue);
+  api.get('/cost/viptime', controller.getCostVipTime)
 
   api = wrapper(ctx, { model: Values, api })
 

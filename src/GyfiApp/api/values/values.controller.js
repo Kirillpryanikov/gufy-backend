@@ -21,5 +21,13 @@ export default(ctx) => {
     return Values.findById(id)
   };
 
+  controller.getCostVipTime = async (req) => {
+    return Values.find({
+      where: {
+        name: 'vip-time',
+      },
+    })
+  }
+
   return controller
 }

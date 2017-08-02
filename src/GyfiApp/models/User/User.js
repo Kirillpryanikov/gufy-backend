@@ -65,10 +65,10 @@ export default function createModel(ctx) {
       defaultValue: false,
       allowNull: false,
     },
-    // phoneNumbers: sequelize.jsonField(sequelize, 'user', 'phoneNumbers'),
-    phoneNumbers: {
-      type: Sequelize.STRING,
-    },
+    phoneNumbers: sequelize.jsonField(sequelize, 'user', 'phoneNumbers'),
+    // phoneNumbers: {
+    //   type: Sequelize.STRING,
+    // },
     city: {
       type: Sequelize.STRING,
       allowNull: true,
@@ -569,12 +569,24 @@ export default function createModel(ctx) {
         const user = this.dataValues
         const avatar = this.get('avatar')
         user.age = this.get('age')
+
+        if (IsJsonString(user.phoneNumbers)) {
+          user.phoneNumbers = JSON.parse(user.phoneNumbers);
+          if (!Array.isArray(user.phoneNumbers)) {
+            let arr = [];
+            arr.push(user.phoneNumbers);
+            user.phoneNumbers = arr;
+          }
+        } else {
+          if (!Array.isArray(user.phoneNumbers)) {
+            let arr = [];
+            arr.push(user.phoneNumbers);
+            user.phoneNumbers = arr
+          }
+        }
+        user.phoneNumbers = JSON.stringify(user.phoneNumbers);
+
         user.gyfi = Number(user.gyfi) || 0
-        // if (user.phoneNumbers && typeof user.phoneNumbers === 'string') {
-        //
-        //   user.phoneNumbers = this.get('phoneNumbers')
-        //   user.phoneNumbers = [user.phoneNumbers]
-        // }
         if (avatar) {
           // user.avatar = `${ctx.config.protocol}://${ctx.config.host}${avatar}`
           const path = `${ctx.config.protocol}://${ctx.config.host}`;
@@ -587,25 +599,25 @@ export default function createModel(ctx) {
     },
   })
   // User.beforeValidate(function (user, options, next) {
-  //   console.log('beforeValidate')
-  //   if (!Array.isArray(user.phoneNumbers)) {
-  //     user.phoneNumbers = []
-  //   }
-  //   user.phoneNumbers = user.phoneNumbers.map(number => {
-  //     if (typeof number !== 'string') {
-  //       try {
-  //         number = number.toString()
-  //       } catch (err) {
-  //         number = null
-  //       }
-  //     }
-  //     return number
-  //   })
-  //   user.phoneNumbers.filter(number => {
-  //     return number !== null
-  //   })
-  //   user.phoneNumbers = JSON.stringify(user.phoneNumbers)
-  //   return next()
+    // console.log('*****************   beforeValidate ', typeof user.phoneNumbers)
+    // if (!Array.isArray(user.phoneNumbers)) {
+    //   user.phoneNumbers = []
+    // }
+    // user.phoneNumbers = user.phoneNumbers.map(number => {
+    //   if (typeof number !== 'string') {
+    //     try {
+    //       number = number.toString()
+    //     } catch (err) {
+    //       number = null
+    //     }
+    //   }
+    //   return number
+    // })
+    // user.phoneNumbers.filter(number => {
+    //   return number !== null
+    // })
+    // user.phoneNumbers = JSON.stringify(user.phoneNumbers)
+    // return next()
   // })
   User.afterDestroy(function (user) {
     const { SocialNetwork } = ctx.models
@@ -617,4 +629,13 @@ export default function createModel(ctx) {
   })
   ctx.models.User = User
   return User
+}
+
+function IsJsonString(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
 }

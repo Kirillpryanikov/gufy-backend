@@ -34,7 +34,7 @@ export default(ctx, parent) => {
   })
 
   const paths = {
-      '/value': {
+      '/option': {
       'get': {
         'summary': 'Получить список всех значений',
           'tags': ['value'],
@@ -64,6 +64,24 @@ export default(ctx, parent) => {
             }
           }
         },
+    },
+
+    '/option/cost/viptime': {
+        'get' : {
+          'summary': 'Получить стоимость vipTime за один час',
+          'tags': ['object'],
+          'responses': {
+            '200': {
+              'description': 'Объект',
+              'schema': {
+                'type': 'object',
+                'items':{
+                  '$ref': '#/definitions/Value'
+                }
+              }
+            }
+        }
+        }
     }
   }
 

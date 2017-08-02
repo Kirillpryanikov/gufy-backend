@@ -24,6 +24,56 @@ export default (ctx) => {
     return prizes;
   };
 
+  controller.getHistoryGame = async (req) => {
+    isAuth(req);
+    const history = await ScratchGameHistory.findAll({});
+    return history;
+  };
+
+  controller.updatePrize = async (req) => {
+    const params = req.allParams();
+    const { id } = params
+    await ScratchGamePrize.update(params, {
+      where: {
+        id,
+      },
+    })
+    return ScratchGamePrize.findById(id)
+  };
+
+  controller.updateHistory = async (req) => {
+    const params = req.allParams();
+    const { id } = params
+    await ScratchGameHistory.update(params, {
+      where: {
+        id,
+      },
+    })
+    return ScratchGameHistory.findById(id)
+  };
+
+  controller.deletePrize = async (req) => {
+    isAuth(req);
+    const params = req.allParams();
+    const { id } = params
+    await ScratchGamePrize.destroy({
+      where: {
+        id,
+      },
+    })
+  };
+
+  controller.deleteHistory = async (req) => {
+    isAuth(req);
+    const params = req.allParams();
+    const { id } = params
+    await ScratchGameHistory.destroy({
+      where: {
+        id,
+      },
+    })
+  };
+
   controller.getRandomPrizes = async (req) => {
     isAuth(req);
 
