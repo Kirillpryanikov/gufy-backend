@@ -57,8 +57,7 @@ export default function createModel(ctx) {
     },
     gyfi: {
       type: Sequelize.INTEGER,
-      defaultValue: 0,
-      allowNull: false,
+      defaultValue: 0
     },
     banned: {
       type: Sequelize.BOOLEAN,
@@ -585,8 +584,9 @@ export default function createModel(ctx) {
           }
         }
         user.phoneNumbers = JSON.stringify(user.phoneNumbers);
-
-        user.gyfi = Number(user.gyfi) || 0
+        if (user.gyfi) {
+          user.gyfi = Number(user.gyfi) || 0;
+        }
         if (avatar) {
           // user.avatar = `${ctx.config.protocol}://${ctx.config.host}${avatar}`
           const path = `${ctx.config.protocol}://${ctx.config.host}`;

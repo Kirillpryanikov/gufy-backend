@@ -134,12 +134,27 @@ export default (ctx) => {
         })
     }
 
+    /**
+     *  If prize is not money, needed decrease count prizes
+     */
+    if (result.decrease.isDecrease) {
+      let count = result.decrease.count;
+      count--;
+
+      await ScratchGamePrize.update({countPrize: count}, {
+        where: {
+          id: result.idPrize,
+        },
+      })
+    }
+
     if (getCountGameUser >= countFreeGame) {
       gyfiUser.gyfi -= costGame;
       await gyfiUser.save()
     }
     return result.prizes;
   };
+
 
   return controller;
 }

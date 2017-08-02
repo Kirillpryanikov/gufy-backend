@@ -5,7 +5,7 @@ export default (ctx) => {
   const handler = {};
 
   handler.getRandomPrize = async (array, countGame, values) => {
-    let userPersent = 100;
+    let userPersent = 0;
 
     /**
      * Increase the chance of losing
@@ -23,7 +23,7 @@ export default (ctx) => {
 
     let prizes = [];
     _.find(array, (item, index) => {
-      if (item.isAvaible){
+      if (item.isAvaible && (!item.isGyfi && item.countPrize > 0 || item.isGyfi)) {
         prizes.push({
           index,
           weight: prizes.length === 0 ? item["weightVictory"] : array[index].weightVictory + prizes[prizes.length - 1].weight,
@@ -41,12 +41,13 @@ export default (ctx) => {
      * Random selection prize
      */
     let winPrize = array[_.find(prizes, prize => prize.weight >= random).index];
+    console.log('winPrize  *****************  ', winPrize);
     return generatePrizes(array, winPrize.id, userPersent);
   };
 
   function generatePrizes(array, prizeId, userPersent) {
     let res = [];
-    const winPrize = _.remove(array, item => item.id === prizeId);
+    const winPrize = _.remove(array, item => item.id === prizeId)[0];
     res.push(winPrize[0]);
 
     array = _.shuffle(array);
@@ -60,10 +61,10 @@ export default (ctx) => {
     /**
      * Winning prizes should be 3
      */
-    res.push(winPrize[0]);
+    res.push(winPrize);
 
     /**
-     * add 12 prize
+     * add #12 prize
      */
     if (array.length > 0) {
       res.push(array.pop());
@@ -73,6 +74,7 @@ export default (ctx) => {
         prizes: _.shuffle(res),
         idPrize: prizeId,
         userPersent: 100 - userPersent,
+        decrease: { isDecrease: !winPrize.isGyfi, count: winPrize.countPrize},
     }
   }
 

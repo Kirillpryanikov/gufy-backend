@@ -9,7 +9,7 @@ export default (ctx) => {
   let api = asyncRouter();
 
   api.get('/prizes', controller.getPrizes);
-  api.get('/history', controller.getHistoryGame)
+  api.get('/history', controller.getHistoryGame);
   api.get('/game', controller.getRandomPrizes);
 
   api.post('/', controller.create);

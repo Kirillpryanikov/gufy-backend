@@ -17,6 +17,7 @@ export default function createModel(ctx) {
     weightVictory: {
       type: Sequelize.INTEGER,
       required: true,
+      default: 0,
     },
     inStoke: {
       type: Sequelize.BOOLEAN,
@@ -31,11 +32,18 @@ export default function createModel(ctx) {
     },
     isGyfi: {
       type: Sequelize.BOOLEAN,
+      required: true,
       default: true,
     },
     description: {
       type: Sequelize.STRING,
     },
+  })
+
+  ScratchGamePrize.hook('beforeCreate', function (prize) {
+    if (prize.image) {
+      prize.image = `${ctx.config.url}/${prize.image}`;
+    }
   })
 
   ctx.models.ScratchGamePrize = ScratchGamePrize
