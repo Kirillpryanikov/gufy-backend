@@ -165,5 +165,4 @@ export default(ctx, parent) => {
   }
 
   return { paths, definitions, parameters }
-
 }
