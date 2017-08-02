@@ -8,13 +8,21 @@ export default(ctx) => {
   const { e400 } = ctx.errors
 
   controller.get = async function(req) {
-    const products = await Product.findAll({
+    const params = req.query;
+    const limit = 20;
+    let query = {
       where: {
         vipTime: {
           $gte: new Date(),
         },
       },
-    })
+    };
+
+    if (req.query.page) {
+      query.offset = parseInt(params.page) * limit;
+      query.limit = limit;
+    }
+    const products = await Product.findAll(query);
     return products
   }
 

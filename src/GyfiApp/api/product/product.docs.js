@@ -98,6 +98,7 @@ export default(ctx, parent) => {
       'get': {
         'summary': 'Получить список всех товаров',
         'tags': ['product'],
+        'parameters': '?page=/number page/  Receive limit - 20',
         'responses': {
           '200': {
             'description': 'Массив товаров',

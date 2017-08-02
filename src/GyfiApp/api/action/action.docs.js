@@ -111,6 +111,7 @@ export default(ctx, parent) => {
       'get': {
         'summary': 'Получить список всех акций',
         'tags': ['action'],
+        'parameters': '?page=/number page/  Receive limit - 20',
         'responses': {
           '200': {
             'description': 'Массив акций',

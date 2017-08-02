@@ -8,13 +8,21 @@ export default(ctx) => {
   const controller = {}
 
   controller.get = async function(req) {
-    const actions = await Action.findAll({
+    const params = req.query;
+    const limit = 20;
+    let query = {
       where: {
         vipTime: {
           $gte: new Date(),
         },
       },
-    })
+    };
+
+    if (req.query.page) {
+      query.offset = parseInt(params.page) * limit;
+      query.limit = limit;
+    }
+    const actions = await Action.findAll(query);
     return actions
   }
 
