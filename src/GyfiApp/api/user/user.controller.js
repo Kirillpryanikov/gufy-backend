@@ -1,6 +1,9 @@
+const jwt = require('jsonwebtoken');
+
 export default(ctx) => {
-  const { User, Wall } = ctx.models
-  const { e400 } = ctx.models
+  const { User, Wall, FreeGyfi, Values } = ctx.models
+  // const { e400 } = ctx.models
+  const { e403, e400 } = ctx.errors
   const { isAuth, _checkNotFound } = ctx.helpers
   const controller = {}
   controller.create = async function(req) {
@@ -180,6 +183,39 @@ export default(ctx) => {
     return {
       like,
       dislike,
+    }
+  }
+
+  controller.getFreeGyfiOnceInDay = async (req) => {
+    isAuth(req);
+    const token = req.headers['x-access-token'];
+    const userObj = jwt.verify(token, ctx.config.jwt.secret);
+
+    const user = await FreeGyfi.find({
+      where: {
+        userId: userObj.id,
+        isVideoClip: false,
+        date: {
+          $gte: Date.now() - 86400000,
+        },
+      },
+    });
+    if (user) {
+      throw e403("User already got free gyfi");
+    } else {
+      let userFind = await User.findById(userObj.id);
+      const freeGyfi = await Values.find({
+        where: {
+          name: 'free-gyfi',
+        }
+      });
+      await FreeGyfi.create({
+        userId: userObj.id,
+        count: parseInt(freeGyfi.value),
+        date: Date.now()
+      });
+      userFind.gyfi += parseInt(freeGyfi.value);
+      userFind.save();
     }
   }
 

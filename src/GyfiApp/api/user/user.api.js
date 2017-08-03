@@ -27,7 +27,10 @@ export default (ctx) => {
   // Соц сети
   api.post('/social', controller.addSocialNetwork)
   api.delete('/social', controller.removeSocialNetwork)
-  api = wrapper(ctx, { model: User, api, ignore: ['post'] })
 
+  // Free gyfi
+  api.get('/freegyfi', controller.getFreeGyfiOnceInDay);
+
+  api = wrapper(ctx, { model: User, api, ignore: ['post'] })
   return api
 }

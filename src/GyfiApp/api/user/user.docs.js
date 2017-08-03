@@ -558,6 +558,23 @@ export default(ctx, parent) => {
         },
       },
     },
+    '/user/freegyfi': {
+      'get': {
+        'summary': 'Получить беспланые гуфи',
+        'tags': ['user'],
+        'responses': {
+          '200': {
+            'description': 'Бесплатные гуфи можно получить один раз за сутки',
+            'schema': {
+              'type': '',
+              'items': {
+                '$ref': '#/definitions/FreeGyfi'
+              }
+            },
+          },
+        },
+      },
+    },
     '/user/device': {
       'get': {
         'summary': 'Получить список устройств юзера',

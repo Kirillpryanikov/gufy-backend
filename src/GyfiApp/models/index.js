@@ -15,6 +15,7 @@ export default function () {
     Values: require('./Values').default(...arguments),
     ScratchGamePrize: require('./ScratchGamePrize').default(...arguments),
     ScratchGameHistory: require('./ScratchGameHistory').default(...arguments),
+    FreeGyfi: require('./FreeGyfi').default(...arguments),
   }
   return setAssociations(models)
 }
