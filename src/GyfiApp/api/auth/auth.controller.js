@@ -7,6 +7,7 @@ export default (ctx) => {
   const socialService = getSocialService(ctx)
   const validateService = getValidateService(ctx)
   const { User, SocialNetwork, Wall, Values } = ctx.models
+
   controller.signup = async (req) => {
     const params = req.allParams()
     const { token, socialNetworkId, socialNetworkType, referal } = params
@@ -33,7 +34,6 @@ export default (ctx) => {
       console.log('ID зареганого юзера', socialNetwork.userId)
       // Пытаемя найти к какому юзеру она привязана
       user = await User.findById(socialNetwork.userId)
-      console.log({ user })
     }
     // Если юзера нет, создаем его
     if (!user) {
@@ -60,12 +60,15 @@ export default (ctx) => {
           name: 'referal-id',
         },
       });
-      const inviterUser = await User.findById(referal);
-      inviterUser.gyfi += parseInt(price.value, 10);
-      user.gyfi += price;
-      inviterUser.save();
-    }
+      let inviterUser = await User.findById(referal);
 
+      if (inviterUser) {
+        inviterUser.gyfi += parseInt(price.value, 10);
+        user.gyfi += parseInt(price.value, 10);
+        inviterUser.save();
+        user.save();
+      }
+    }
     user.sendEmail(emailOptions)
     return {
       user,
