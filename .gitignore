@@ -7,4 +7,5 @@ node_modules
 ncp-debug.log
 npm-debug.log
 
+storage/
 .idea/

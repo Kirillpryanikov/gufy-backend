@@ -11,7 +11,7 @@ import path from 'path';
 import webpack from 'webpack';
 import extend from 'extend';
 import AssetsPlugin from 'assets-webpack-plugin';
-
+import CopyWebpackPlugin  from 'copy-webpack-plugin';
 
 const DEBUG = !process.argv.includes('--release');
 const VERBOSE = process.argv.includes('--verbose');
@@ -292,6 +292,10 @@ const clientConfig = extend(true, {}, config, {
       processOutput: x => `module.exports = ${JSON.stringify(x)};`,
     }),
 
+    new CopyWebpackPlugin([
+      { from: { glob : '../storage/*' }, to: '../../storage' }
+    ], { copyUnmodified: true }),
+
     // Assign the module and chunk ids by occurrence count
     // Consistent ordering of modules required if using any hashing ([hash] or [chunkhash])
     // https://webpack.github.io/docs/list-of-plugins.html#occurrenceorderplugin
@@ -373,5 +377,7 @@ const serverConfig = extend(true, {}, config, {
 
   devtool: 'source-map',
 });
+
+
 
 export default [clientConfig, serverConfig];
