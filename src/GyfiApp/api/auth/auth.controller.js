@@ -47,6 +47,22 @@ export default (ctx) => {
       user = await User.create(params)
       await user.addSocialNetwork(socialNetworkId, socialNetworkType, token)
       await Wall.create({ userId: user.id })
+
+      if (referal) {
+        const price = await Values.find({
+          where: {
+            name: 'referal-id',
+          },
+        });
+        let inviterUser = await User.findById(referal);
+
+        if (inviterUser) {
+          inviterUser.gyfi += parseInt(price.value, 10);
+          user.gyfi += parseInt(price.value, 10);
+          inviterUser.save();
+          user.save();
+        }
+      }
     }
     // return user
     const emailOptions = {
@@ -54,21 +70,6 @@ export default (ctx) => {
       text: 'Поздравляем с регистрацией',
     }
 
-    if (referal) {
-      const price = await Values.find({
-        where: {
-          name: 'referal-id',
-        },
-      });
-      let inviterUser = await User.findById(referal);
-
-      if (inviterUser) {
-        inviterUser.gyfi += parseInt(price.value, 10);
-        user.gyfi += parseInt(price.value, 10);
-        inviterUser.save();
-        user.save();
-      }
-    }
     user.sendEmail(emailOptions)
     return {
       user,
