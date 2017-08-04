@@ -575,6 +575,23 @@ export default(ctx, parent) => {
         },
       },
     },
+    '/user/banner': {
+      'get': {
+        'summary': 'Получить беспланые гуфи',
+        'tags': ['user'],
+        'responses': {
+          '200': {
+            'description': 'Бесплатные гуфи можно получить после просмотра видео контента',
+            'schema': {
+              'type': '',
+              'items': {
+                '$ref': '#/definitions/FreeGyfi'
+              }
+            },
+          },
+        },
+      },
+    },
     '/user/device': {
       'get': {
         'summary': 'Получить список устройств юзера',

@@ -237,9 +237,6 @@ export default(ctx) => {
       count: parseInt(freeGyfi.value),
       date: Date.now()
     });
-    console.log('************-------------1  ', freeGyfi);
-    console.log('************-------------2  ', userFind.firstName);
-
     userFind.gyfi += parseInt(freeGyfi.value);
     userFind.save();
   }
