@@ -243,8 +243,6 @@ export default(ctx) => {
 
   controller.removeUser = (req) => {
     isAuth(req);
-
-    console.log('********************************** DELETE USER !!!!!!')
   }
 
   return controller

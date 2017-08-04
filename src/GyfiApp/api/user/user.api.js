@@ -7,7 +7,8 @@ export default (ctx) => {
   let api = asyncRouter();
   api.post('/', controller.create)
   api.get('/me', controller.getMe)
-  api.delete('/:id', controller.removeUser);
+  // api.delete('/:id', controller.removeUser);
+
   // Устройства юзера
   api.post('/device', controller.addDevice)
   api.delete('/device', controller.removeDevice)

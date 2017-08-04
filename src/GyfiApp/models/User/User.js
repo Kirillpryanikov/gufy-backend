@@ -569,21 +569,16 @@ export default function createModel(ctx) {
         const avatar = this.get('avatar')
         user.age = this.get('age')
 
-        if (IsJsonString(user.phoneNumbers)) {
-          user.phoneNumbers = JSON.parse(user.phoneNumbers);
-          if (!Array.isArray(user.phoneNumbers)) {
-            let arr = [];
-            arr.push(user.phoneNumbers);
-            user.phoneNumbers = arr;
+        if (user.phoneNumbers) {
+          user.phoneNumbers = this.get('phoneNumbers')
+
+          if (IsJsonString(user.phoneNumbers)) {
+            user.phoneNumbers = JSON.parse(user.phoneNumbers)
           }
         } else {
-          if (!Array.isArray(user.phoneNumbers)) {
-            let arr = [];
-            arr.push(user.phoneNumbers);
-            user.phoneNumbers = arr
-          }
+          user.phoneNumbers = []
         }
-        user.phoneNumbers = JSON.stringify(user.phoneNumbers);
+
         if (user.gyfi) {
           user.gyfi = Number(user.gyfi) || 0;
         }
@@ -619,6 +614,14 @@ export default function createModel(ctx) {
     // user.phoneNumbers = JSON.stringify(user.phoneNumbers)
     // return next()
   // })
+
+  // User.hook('beforeValidate', function (user) {
+  //   if (IsJsonString(user.phoneNumbers) ) {
+  //     user.phoneNumbers = JSON.parse(user.phoneNumbers)
+  //   }
+  //   user.phoneNumbers = JSON.stringify(user.phoneNumbers);
+  // })
+
   User.afterDestroy(function (user) {
     const { SocialNetwork } = ctx.models
     return SocialNetwork.destroy({
@@ -638,4 +641,14 @@ function IsJsonString(str) {
     return false;
   }
   return true;
+}
+
+function transformationStringIntoArray(array) {
+  console.log(typeof array);
+  console.log('array -->  ', array);
+  array = array.replace(/\[|\]/g, '');
+  array = array.replace(/"/g, '');
+  array = array.replace(/\\/g, '');
+  array = array.split(',');
+  return array;
 }
