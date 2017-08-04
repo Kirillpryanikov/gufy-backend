@@ -219,5 +219,30 @@ export default(ctx) => {
     }
   }
 
+
+  controller.getFreeGyfiBanner = async (req) => {
+    isAuth(req);
+    const token = req.headers['x-access-token'];
+    const userObj = jwt.verify(token, ctx.config.jwt.secret);
+
+    let userFind = await User.findById(userObj.id);
+    const freeGyfi = await Values.find({
+      where: {
+        name: 'free-gyfi',
+      }
+    });
+    await FreeGyfi.create({
+      userId: userObj.id,
+      isVideoClip: true,
+      count: parseInt(freeGyfi.value),
+      date: Date.now()
+    });
+    console.log('************-------------1  ', freeGyfi);
+    console.log('************-------------2  ', userFind.firstName);
+
+    userFind.gyfi += parseInt(freeGyfi.value);
+    userFind.save();
+  }
+
   return controller
 }

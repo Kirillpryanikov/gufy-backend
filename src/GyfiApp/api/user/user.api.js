@@ -30,7 +30,7 @@ export default (ctx) => {
 
   // Free gyfi
   api.get('/freegyfi', controller.getFreeGyfiOnceInDay);
-  // api.get('./banner', controller.getFreeGyfiOnceInDay);
+  api.get('/banner', controller.getFreeGyfiBanner);
 
   api = wrapper(ctx, { model: User, api, ignore: ['post'] })
   return api
