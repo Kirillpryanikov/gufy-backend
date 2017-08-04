@@ -293,7 +293,7 @@ const clientConfig = extend(true, {}, config, {
     }),
 
     new CopyWebpackPlugin([
-      { from: { glob : '../storage/*' }, to: '../../storage' }
+      { from: { glob : '../storage/*' }, to: '../storage/' }
     ], { copyUnmodified: true }),
 
     // Assign the module and chunk ids by occurrence count
