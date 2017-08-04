@@ -17,10 +17,13 @@ import pkg from '../package.json';
  * output (build) folder.
  */
 async function copy({ watch } = {}) {
+  // fs.mkdir('build/public/storage');
+
   const ncp = Promise.promisify(require('ncp'));
 
   await Promise.all([
     // ncp('src/public', 'build/public'),
+    ncp('storage', 'build/public/storage'),
     // ncp('src/content', 'build/content'),
   ]);
 

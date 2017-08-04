@@ -26,7 +26,6 @@ const routes = [
 async function render() {
   let server;
   await new Promise(resolve => (server = runServer(resolve)));
-
   await routes.reduce((promise, route) => promise.then(async () => {
     const url = `http://${host}${route}`;
     const dir = `build/public${route.replace(/[^\/]*$/, '')}`;

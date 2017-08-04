@@ -241,5 +241,11 @@ export default(ctx) => {
     userFind.save();
   }
 
+  controller.removeUser = (req) => {
+    isAuth(req);
+
+    console.log('********************************** DELETE USER !!!!!!')
+  }
+
   return controller
 }
