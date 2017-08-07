@@ -1,5 +1,5 @@
 import serverRun from './serverRun'
-import 'babel-polyfill';
+// import 'babel-polyfill';
 require('babel-runtime/core-js/promise').default = require('bluebird');
 require('isomorphic-fetch');
 import config from './config'
