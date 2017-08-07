@@ -594,12 +594,19 @@ export default function createModel(ctx) {
       },
     },
   })
-
-  User.hook('beforeValidate', function (user) {
+  User.beforeValidate(function (user, options, next) {
     if (!IsJsonString(user.phoneNumbers)) {
       user.phoneNumbers = JSON.stringify(user.phoneNumbers);
     }
-  });
+    return next()
+  })
+
+  // User.hook('beforeValidate', function (user) {
+  //   if (IsJsonString(user.phoneNumbers)) {
+  //     user.phoneNumbers = JSON.parse(user.phoneNumbers)
+  //   }
+  //   user.phoneNumbers = JSON.stringify(user.phoneNumbers);
+  // });
 
   User.afterDestroy(function (user) {
     const { SocialNetwork } = ctx.models
