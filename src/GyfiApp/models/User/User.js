@@ -569,7 +569,6 @@ export default function createModel(ctx) {
         const user = this.dataValues
         const avatar = this.get('avatar')
         user.age = this.get('age')
-
         if (user.phoneNumbers) {
           user.phoneNumbers = this.get('phoneNumbers')
 
@@ -594,19 +593,17 @@ export default function createModel(ctx) {
       },
     },
   })
-  User.beforeValidate(function (user, options, next) {
-    if (!IsJsonString(user.phoneNumbers)) {
-      user.phoneNumbers = JSON.stringify(user.phoneNumbers);
-    }
-    return next()
-  })
 
-  // User.hook('beforeValidate', function (user) {
-  //   if (IsJsonString(user.phoneNumbers)) {
-  //     user.phoneNumbers = JSON.parse(user.phoneNumbers)
-  //   }
-  //   user.phoneNumbers = JSON.stringify(user.phoneNumbers);
-  // });
+  User.hook('beforeValidate', function (user) {
+    console.log('##########################################!!!! 1');
+
+    if (!IsJsonString(user.phoneNumbers)) {
+      console.log('##########################################!!!! 2');
+      user.phoneNumbers = JSON.stringify(user.phoneNumbers);
+
+      return sequelize.Promise.resolve(user);
+    }
+  });
 
   User.afterDestroy(function (user) {
     const { SocialNetwork } = ctx.models
