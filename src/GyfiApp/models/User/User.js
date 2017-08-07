@@ -426,7 +426,6 @@ export default function createModel(ctx) {
         return Object.assign(object, params)
       },
       generateAuthToken(params) {
-        console.log('params ------->  ', params)
         return jwt.sign(this.getIdentity(params), ctx.config.jwt.secret)
       },
       // async verifyPassword(password) {

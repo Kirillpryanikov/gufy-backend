@@ -301,7 +301,35 @@ export default(ctx) => {
     })
   };
 
+  controller.updateUser = async (req) => {
+    isAuth(req);
 
+    const params = req.allParams();
+    const { id, role, firstName, lastName, email, avatar } = params
+
+    if (role || firstName || lastName || email || avatar) {
+      const paramsToken = {
+        id,
+        role,
+        firstName,
+        lastName,
+        email,
+        avatar,
+      };
+
+      let user = await User.findById(id);
+      user.update(params);
+      return {
+        user,
+        token: user.generateAuthToken(paramsToken),
+      }
+    }
+    return await User.update(params, {
+      where: {
+        id,
+      },
+    })
+  };
 
   return controller
 }

@@ -8,7 +8,7 @@ export default (ctx) => {
   api.post('/', controller.create)
   api.get('/me', controller.getMe)
   api.delete('/', controller.removeUser);
-  // api.put('/:id', controller.updateUser);
+  api.put('/:id', controller.updateUser);
 
   // Устройства юзера
   api.post('/device', controller.addDevice)
