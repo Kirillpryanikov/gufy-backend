@@ -426,6 +426,7 @@ export default function createModel(ctx) {
         return Object.assign(object, params)
       },
       generateAuthToken(params) {
+        console.log('params ------->  ', params)
         return jwt.sign(this.getIdentity(params), ctx.config.jwt.secret)
       },
       // async verifyPassword(password) {
@@ -615,12 +616,12 @@ export default function createModel(ctx) {
     // return next()
   // })
 
-  // User.hook('beforeValidate', function (user) {
-  //   if (IsJsonString(user.phoneNumbers) ) {
-  //     user.phoneNumbers = JSON.parse(user.phoneNumbers)
-  //   }
-  //   user.phoneNumbers = JSON.stringify(user.phoneNumbers);
-  // })
+  User.hook('beforeValidate', function (user) {
+    if (IsJsonString(user.phoneNumbers)) {
+      user.phoneNumbers = JSON.parse(user.phoneNumbers)
+    }
+    user.phoneNumbers = JSON.stringify(user.phoneNumbers);
+  });
 
   User.afterDestroy(function (user) {
     const { SocialNetwork } = ctx.models
@@ -643,12 +644,3 @@ function IsJsonString(str) {
   return true;
 }
 
-function transformationStringIntoArray(array) {
-  console.log(typeof array);
-  console.log('array -->  ', array);
-  array = array.replace(/\[|\]/g, '');
-  array = array.replace(/"/g, '');
-  array = array.replace(/\\/g, '');
-  array = array.split(',');
-  return array;
-}

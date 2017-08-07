@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 export default(ctx) => {
-  const { User, Wall, FreeGyfi, Values } = ctx.models
+  const { User, Wall, FreeGyfi, Values, Product, Action, Ticket, Post, ScratchGameHistory, Device, UserLike } = ctx.models
   // const { e400 } = ctx.models
   const { e403, e400 } = ctx.errors
   const { isAuth, _checkNotFound } = ctx.helpers
@@ -241,9 +241,67 @@ export default(ctx) => {
     userFind.save();
   }
 
-  controller.removeUser = (req) => {
+  controller.removeUser = async (req) => {
     isAuth(req);
-  }
+    const token = req.headers['x-access-token'];
+    let userObj = jwt.verify(token, ctx.config.jwt.secret);
+
+    if (userObj.role === 'admin') {
+      const params = req.allParams();
+      const { id } = params
+      userObj.id = id
+    }
+
+    await User.destroy({
+      where: {
+        id: userObj.id,
+      },
+    });
+
+    await Ticket.destroy({
+      where: {
+        userId: userObj.id,
+      },
+    });
+
+    await Product.destroy({
+      where: {
+        ownerId: userObj.id,
+      },
+    });
+
+    await Action.destroy({
+      where: {
+        ownerId: userObj.id,
+      },
+    });
+
+    await Post.destroy({
+      where: {
+        userId: userObj.id,
+      },
+    });
+
+    await ScratchGameHistory.destroy({
+      where: {
+        userId: userObj.id,
+      },
+    });
+
+    await Device.destroy({
+      where: {
+        userId: userObj.id,
+      },
+    });
+
+    await UserLike.destroy({
+      where: {
+        fromUserId: userObj.id,
+      },
+    })
+  };
+
+
 
   return controller
 }
