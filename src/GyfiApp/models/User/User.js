@@ -596,10 +596,9 @@ export default function createModel(ctx) {
   })
 
   User.hook('beforeValidate', function (user) {
-    if (IsJsonString(user.phoneNumbers)) {
-      user.phoneNumbers = JSON.parse(user.phoneNumbers)
+    if (!IsJsonString(user.phoneNumbers)) {
+      user.phoneNumbers = JSON.stringify(user.phoneNumbers);
     }
-    user.phoneNumbers = JSON.stringify(user.phoneNumbers);
   });
 
   User.afterDestroy(function (user) {
