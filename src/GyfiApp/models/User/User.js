@@ -594,27 +594,6 @@ export default function createModel(ctx) {
       },
     },
   })
-  // User.beforeValidate(function (user, options, next) {
-    // console.log('*****************   beforeValidate ', typeof user.phoneNumbers)
-    // if (!Array.isArray(user.phoneNumbers)) {
-    //   user.phoneNumbers = []
-    // }
-    // user.phoneNumbers = user.phoneNumbers.map(number => {
-    //   if (typeof number !== 'string') {
-    //     try {
-    //       number = number.toString()
-    //     } catch (err) {
-    //       number = null
-    //     }
-    //   }
-    //   return number
-    // })
-    // user.phoneNumbers.filter(number => {
-    //   return number !== null
-    // })
-    // user.phoneNumbers = JSON.stringify(user.phoneNumbers)
-    // return next()
-  // })
 
   User.hook('beforeValidate', function (user) {
     if (IsJsonString(user.phoneNumbers)) {
