@@ -323,10 +323,8 @@ export default(ctx) => {
         user,
         token: user.generateAuthToken(paramsToken),
       }
-    } else {
-     await user.update(params);
     }
-    return user
+    return user.update(params)
   };
 
   return controller
