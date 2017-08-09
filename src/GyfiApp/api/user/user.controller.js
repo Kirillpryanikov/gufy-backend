@@ -306,6 +306,7 @@ export default(ctx) => {
 
     const params = req.allParams();
     const { id, role, firstName, lastName, email, avatar } = params
+    let user = await User.findById(id);
 
     if (role || firstName || lastName || email || avatar) {
       const paramsToken = {
@@ -317,18 +318,15 @@ export default(ctx) => {
         avatar,
       };
 
-      let user = await User.findById(id);
       user.update(params);
       return {
         user,
         token: user.generateAuthToken(paramsToken),
       }
+    } else {
+     await user.update(params);
     }
-    return await User.update(params, {
-      where: {
-        id,
-      },
-    })
+    return user
   };
 
   return controller
