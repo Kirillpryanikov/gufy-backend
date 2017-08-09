@@ -594,10 +594,8 @@ export default function createModel(ctx) {
   })
 
   User.hook('beforeValidate', function (user) {
-    console.log('##########################################!!!! 1');
 
     if (!IsJsonString(user.phoneNumbers)) {
-      console.log('##########################################!!!! 2');
       user.phoneNumbers = JSON.stringify(user.phoneNumbers);
 
       return sequelize.Promise.resolve(user);

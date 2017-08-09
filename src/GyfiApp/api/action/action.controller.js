@@ -1,5 +1,6 @@
 
 var jwt = require('jsonwebtoken');
+const moment = require('moment');
 
 export default(ctx) => {
   const { User, Action, Ticket, Values } = ctx.models
@@ -133,7 +134,7 @@ export default(ctx) => {
       },
     });
     const user = await User.findById(userObj.id).then(checkNotFound);
-    const costGyfi = price.value * hours;
+    const costGyfi = parseFloat(price.value) * hours;
 
     if (user.gyfi < costGyfi) {
       throw e400('У вас недостаточно валюты')
@@ -145,6 +146,42 @@ export default(ctx) => {
     user.save();
     action.save();
 
+    return action;
+  };
+
+  controller.update = async function(req) {
+    isAuth(req);
+    const params = req.allParams()
+    const { id } = params
+
+    let action = await Action.findById(id);
+
+    if (parseFloat(params.vipTime) > 0) {
+      const token = req.headers['x-access-token'];
+      const userObj = jwt.verify(token, ctx.config.jwt.secret);
+
+      let user = await User.findById(userObj.id);
+      const price = await Values.find({
+        where: {
+          name: 'vip-time',
+        },
+      });
+
+      const costGyfi = parseFloat(price.value) * parseFloat(params.vipTime);
+      if (user.gyfi < costGyfi) {
+        throw e400('У вас недостаточно валюты');
+      }
+      if (params.vipTime) {
+        params.vipTime = new Date(action.vipTime.setHours(action.vipTime.getHours() + params.vipTime));
+        user.gyfi = user.gyfi - costGyfi;
+        await user.save();
+      }
+    }
+    await Action.update(params, {
+      where: {
+        id,
+      },
+    })
     return action;
   };
 

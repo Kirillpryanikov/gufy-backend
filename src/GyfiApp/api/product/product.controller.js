@@ -68,18 +68,65 @@ export default(ctx) => {
     return product
   }
 
+  // controller.update = async function(req) {
+  //   const params = req.allParams()
+  //   const { id } = params
+  //   _.omit(params, ['ownerId', 'buyerId'])
+  //
+  //   if (params.vipTime) {
+  //     const addTime = (parseFloat(params.vipTime) * 3600000) + 86400000;
+  //     const nextDay = new Date(Date.now() + addTime);
+  //     params.vipTime = new Date(Date.UTC(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate(), nextDay.getHours(), nextDay.getMinutes()))
+  //   }
+  //   await Product.update(params, {
+  //     where: {
+  //       id,
+  //     },
+  //   })
+  //   return Product.findById(id)
+  // }
+
+
   controller.update = async function(req) {
+    isAuth(req);
     const params = req.allParams()
     const { id } = params
-    _.omit(params, ['ownerId', 'buyerId'])
-    console.log({ params })
+    _.omit(params, ['ownerId', 'buyerId']);
+
+    let product = await Product.findById(id);
+
+    if (parseFloat(params.vipTime) > 0) {
+      const token = req.headers['x-access-token'];
+      const userObj = jwt.verify(token, ctx.config.jwt.secret);
+
+      let user = await User.findById(userObj.id);
+      const price = await Values.find({
+        where: {
+          name: 'vip-time',
+        },
+      });
+
+      const costGyfi = parseFloat(price.value) * parseFloat(params.vipTime);
+      if (user.gyfi < costGyfi) {
+        throw e400('У вас недостаточно валюты');
+      }
+      if (params.vipTime) {
+        console.log('**********11  ', product.vipTime);
+        params.vipTime = new Date(product.vipTime.setHours(product.vipTime.getHours() + params.vipTime))
+        console.log('**********11  ', params.vipTime);
+        user.gyfi = user.gyfi - costGyfi;
+        await user.save();
+      }
+    }
+
     await Product.update(params, {
-      where: {
-        id,
-      },
-    })
-    return Product.findById(id)
-  }
+          where: {
+            id,
+          },
+        })
+    return product;
+  };
+
 
   controller.buy = async function(req) {
     isAuth(req)
