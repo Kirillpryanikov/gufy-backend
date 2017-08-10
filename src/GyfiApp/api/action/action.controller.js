@@ -153,7 +153,6 @@ export default(ctx) => {
     isAuth(req);
     const params = req.allParams()
     const { id } = params
-
     let action = await Action.findById(id);
 
     if (parseFloat(params.vipTime) > 0) {
@@ -166,11 +165,11 @@ export default(ctx) => {
           name: 'vip-time',
         },
       });
-
       const costGyfi = parseFloat(price.value) * parseFloat(params.vipTime);
       if (user.gyfi < costGyfi) {
         throw e400('У вас недостаточно валюты');
       }
+
       if (params.vipTime) {
         params.vipTime = new Date(action.vipTime.setHours(action.vipTime.getHours() + params.vipTime));
         user.gyfi = user.gyfi - costGyfi;
@@ -181,8 +180,8 @@ export default(ctx) => {
       where: {
         id,
       },
-    })
-    return action;
+    });
+    return Action.findById(id);
   };
 
   return controller

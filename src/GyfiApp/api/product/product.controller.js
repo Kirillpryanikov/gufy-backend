@@ -68,25 +68,6 @@ export default(ctx) => {
     return product
   }
 
-  // controller.update = async function(req) {
-  //   const params = req.allParams()
-  //   const { id } = params
-  //   _.omit(params, ['ownerId', 'buyerId'])
-  //
-  //   if (params.vipTime) {
-  //     const addTime = (parseFloat(params.vipTime) * 3600000) + 86400000;
-  //     const nextDay = new Date(Date.now() + addTime);
-  //     params.vipTime = new Date(Date.UTC(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate(), nextDay.getHours(), nextDay.getMinutes()))
-  //   }
-  //   await Product.update(params, {
-  //     where: {
-  //       id,
-  //     },
-  //   })
-  //   return Product.findById(id)
-  // }
-
-
   controller.update = async function(req) {
     isAuth(req);
     const params = req.allParams()
@@ -111,20 +92,18 @@ export default(ctx) => {
         throw e400('У вас недостаточно валюты');
       }
       if (params.vipTime) {
-        console.log('**********11  ', product.vipTime);
         params.vipTime = new Date(product.vipTime.setHours(product.vipTime.getHours() + params.vipTime))
-        console.log('**********11  ', params.vipTime);
         user.gyfi = user.gyfi - costGyfi;
         await user.save();
       }
     }
 
     await Product.update(params, {
-          where: {
-            id,
-          },
-        })
-    return product;
+      where: {
+        id,
+      },
+    });
+    return Product.findById(id);
   };
 
 
