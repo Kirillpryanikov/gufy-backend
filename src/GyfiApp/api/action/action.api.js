@@ -10,9 +10,11 @@ export default (ctx) => {
   api.get('/', controller.get)
   api.get('/old', controller.getOld)
   api.get('/other', controller.getProductsOther)
-  api.post('/', controller.create)
+  api.get('/search', controller.getActionByName)
   api.get('/:id/users', controller.users)
   api.get('/:id/tickets', controller.tickets)
+
+  api.post('/', controller.create)
   api.post('/:id/join', controller.join)
   api.post('/:id/complete', controller.complete)
   api.put('/:id/extend-time', controller.extendVipTime)

@@ -91,11 +91,14 @@ export default(ctx) => {
       if (user.gyfi < costGyfi) {
         throw e400('У вас недостаточно валюты');
       }
+
       if (params.vipTime) {
         params.vipTime = new Date(product.vipTime.setHours(product.vipTime.getHours() + params.vipTime))
         user.gyfi = user.gyfi - costGyfi;
         await user.save();
       }
+    } else {
+      delete params.vipTime;
     }
 
     await Product.update(params, {

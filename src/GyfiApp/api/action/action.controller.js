@@ -170,18 +170,36 @@ export default(ctx) => {
         throw e400('У вас недостаточно валюты');
       }
 
-      if (params.vipTime) {
+      if (params.vipTime && parseFloat(params.vipTime) > 0) {
         params.vipTime = new Date(action.vipTime.setHours(action.vipTime.getHours() + params.vipTime));
         user.gyfi = user.gyfi - costGyfi;
         await user.save();
       }
+    } else {
+      delete params.vipTime;
     }
+
     await Action.update(params, {
       where: {
         id,
       },
     });
     return Action.findById(id);
+  };
+
+  controller.getActionByName = async function (req) {
+    isAuth(req);
+    const params = req.allParams();
+    console.log('params  ', params)
+    const name = params.name;
+    console.log('************************  step ** ', name);
+    return await Action.findAll({
+      where: {
+        title: {
+          $like: name
+        },
+      },
+    })
   };
 
   return controller
