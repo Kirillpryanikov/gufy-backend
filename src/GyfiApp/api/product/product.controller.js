@@ -163,7 +163,33 @@ export default(ctx) => {
     return product;
   };
 
+  controller.getProductByName = async function (req) {
+    isAuth(req);
+    const params = req.allParams();
+    const { name, viptime } = params;
 
+    let query = {
+      where: {
+        title: {
+          $like: `%${name}%`,
+        },
+      },
+    };
+
+    if (viptime === 'true') {
+      query = {
+        where: {
+          title: {
+            $like: `%${name}%`,
+          },
+          vipTime: {
+            $gte: new Date(),
+          },
+        },
+      }
+    }
+    return await Product.findAll(query)
+  };
 
 
   return controller

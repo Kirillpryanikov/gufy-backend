@@ -292,6 +292,22 @@ export default(ctx, parent) => {
         }
       },
     },
+    '/action/search': {
+      'get': {
+        'summary': 'Найти акции по имени',
+        'parameters': '?name=/title action/&viptime=/boolean/',
+        'tags': ['action'],
+        'responses': {
+          '200': {
+            'description': 'Акции',
+            'schema': {
+              '$ref': '#/definitions/Action'
+            }
+          }
+        }
+      },
+    },
+
     '/action/{id}/extend-time': {
       'parameters':[
         {

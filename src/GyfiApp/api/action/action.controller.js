@@ -190,16 +190,29 @@ export default(ctx) => {
   controller.getActionByName = async function (req) {
     isAuth(req);
     const params = req.allParams();
-    console.log('params  ', params)
-    const name = params.name;
-    console.log('************************  step ** ', name);
-    return await Action.findAll({
+    const { name, viptime } = params;
+
+    let query = {
       where: {
         title: {
-          $like: name
+          $like: `%${name}%`,
         },
       },
-    })
+    };
+
+    if (viptime === 'true') {
+      query = {
+        where: {
+          title: {
+            $like: `%${name}%`,
+          },
+          vipTime: {
+            $gte: new Date(),
+          },
+        },
+      }
+    }
+    return await Action.findAll(query)
   };
 
   return controller

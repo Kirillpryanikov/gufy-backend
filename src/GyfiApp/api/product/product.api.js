@@ -9,13 +9,14 @@ export default (ctx) => {
   api.get('/', controller.get)
   api.get('/old', controller.getOld)
   api.get('/other', controller.getProductsOther)
+  api.get('/search', controller.getProductByName)
+
   api.post('/', controller.create)
   api.put('/:id', controller.update)
   api.post('/:id/buy', controller.buy)
   api.put('/:id/extend-time', controller.extendVipTime)
 
   api = wrapper(ctx, { model: Product, api })
-
 
   return api
 }

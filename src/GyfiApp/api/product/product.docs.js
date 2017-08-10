@@ -196,6 +196,22 @@ export default(ctx, parent) => {
         }
       },
     },
+    '/product/search': {
+      'get': {
+        'summary': 'Найти товар по имени',
+        'parameters': '?name=/title product/&viptime=/boolean/',
+        'tags': ['product'],
+        'responses': {
+          '200': {
+            'description': 'Товар',
+            'schema': {
+              '$ref': '#/definitions/Product'
+            }
+          }
+        }
+      },
+    },
+
     '/product/{id}/extend-time': {
       'parameters':[
         {
