@@ -59,8 +59,9 @@ export default(ctx) => {
     params.ownerId = owner.id;
     if (params.vipTime) {
       const addTime = (parseFloat(params.vipTime) * 3600000) + 86400000;
-      const nextDay = new Date(Date.now() + addTime);
-      params.vipTime =  new Date(Date.UTC(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate(), nextDay.getHours(), nextDay.getMinutes()))
+      params.vipTime = new Date(Date.now() + addTime);
+    } else {
+      params.vipTime = new Date(Date.now() + 86400000);
     }
 
     const action = await Action.create(params)
