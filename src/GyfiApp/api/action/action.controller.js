@@ -64,7 +64,7 @@ export default(ctx) => {
       params.vipTime = new Date(Date.now() + 86400000);
     }
 
-    const action = await Action.create(params)
+    const action = await Action.create(params);
     // if (params.fixedWinnerId) {
     //   await Ticket.create({ userId: userObj.id, actionId: action.id, price: params.price})
     // }
