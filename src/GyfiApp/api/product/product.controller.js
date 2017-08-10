@@ -55,8 +55,9 @@ export default(ctx) => {
     const owner = await User.findById(params.ownerId).then(_checkNotFound('User'))
     if (params.vipTime) {
       const addTime = (parseFloat(params.vipTime) * 3600000) + 86400000;
-      const nextDay = new Date(Date.now() + addTime);
-      params.vipTime =  new Date(Date.UTC(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate(), nextDay.getHours(), nextDay.getMinutes()))
+      params.vipTime = new Date(Date.now() + addTime);
+    } else {
+      params.vipTime = new Date(Date.now() + 86400000);
     }
     const product = await Product.create(params)
     try {
