@@ -54,7 +54,7 @@ export default(ctx) => {
     // const token = req.headers['x-access-token'];
     // const userObj = jwt.verify(token, ctx.config.jwt.secret);
 
-    const params = req.allParams()
+    const params = req.allParams();
     const owner = await User.findById(req.user.id);
     params.ownerId = owner.id;
     if (params.vipTime) {
