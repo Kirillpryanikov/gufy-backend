@@ -55,7 +55,7 @@ export default(ctx) => {
     // const userObj = jwt.verify(token, ctx.config.jwt.secret);
 
     const params = req.allParams()
-    const owner = await User.findById(req.user.id)
+    const owner = await User.findById(req.user.id);
     params.ownerId = owner.id;
     if (params.vipTime) {
       const addTime = (parseFloat(params.vipTime) * 3600000) + 86400000;
