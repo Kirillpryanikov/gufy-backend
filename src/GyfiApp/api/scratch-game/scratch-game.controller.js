@@ -155,6 +155,5 @@ export default (ctx) => {
     return result.prizes;
   };
 
-
   return controller;
 }

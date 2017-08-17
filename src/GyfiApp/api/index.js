@@ -50,8 +50,8 @@ export default (ctx, params) => {
 
   api.post('/image', fileUpload(), async (req) => {
     if (req.files && req.files.image) {
-      const { image } = req.files
-      const filename = await ctx.helpers.saveFile(`${new Date().getTime()}`, image)
+      const { image } = req.files;
+      const filename = await ctx.helpers.saveFile(`${new Date().getTime()}`, image);
       return {
         fullPath: `${ctx.config.protocol}://${ctx.config.host}/${filename}`,
         path: `${filename}`,

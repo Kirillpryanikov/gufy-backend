@@ -32,24 +32,32 @@ export default (ctx) => {
       }
     });
 
+    console.log('prizes  ', prizes[0]);
+    console.log('prizes  ', prizes[1]);
+    console.log('prizes  ', prizes[2]);
+    console.log('prizes  ', prizes[3]);
+    console.log('prizes  ', prizes[4]);
+
     prizes = prizes.sort(function(a, b) {
       return a.weight - b.weight;
     });
+
+    console.log('random next row');
+
     const totalWeight = _.last(prizes).weight;
-    const random = Math.random() * (0, totalWeight);
+    let random = Math.random() * (0, totalWeight);
+    random = Math.floor(random, -1);
     /**
      * Random selection prize
      */
     let winPrize = array[_.find(prizes, prize => prize.weight >= random).index];
-    console.log('winPrize  *****************  ', winPrize);
     return generatePrizes(array, winPrize.id, userPersent);
   };
 
   function generatePrizes(array, prizeId, userPersent) {
     let res = [];
     const winPrize = _.remove(array, item => item.id === prizeId)[0];
-    res.push(winPrize[0]);
-
+    res.push(winPrize);
     array = _.shuffle(array);
     _.find(array, (item, i) => {
       if (i < 4) {
@@ -69,7 +77,6 @@ export default (ctx) => {
     if (array.length > 0) {
       res.push(array.pop());
     }
-
     return {
         prizes: _.shuffle(res),
         idPrize: prizeId,
