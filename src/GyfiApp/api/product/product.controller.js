@@ -94,7 +94,7 @@ export default(ctx) => {
       }
 
       if (params.vipTime) {
-        params.vipTime = new Date(product.vipTime.setHours(product.vipTime.getHours() + params.vipTime))
+        params.vipTime = new Date(product.vipTime.setHours(product.vipTime.getHours() + +params.vipTime))
         user.gyfi = user.gyfi - costGyfi;
         await user.save();
       }
@@ -156,7 +156,7 @@ export default(ctx) => {
     }
     const product = await Product.findById(id)
     user.gyfi -= costGyfi;
-    product.vipTime = await new Date(product.vipTime).setHours(product.vipTime.getHours() + hours);
+    product.vipTime = await new Date(product.vipTime).setHours(product.vipTime.getHours() + +hours);
 
     user.save();
     product.save();

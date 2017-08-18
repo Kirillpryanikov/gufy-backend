@@ -140,9 +140,9 @@ export default(ctx) => {
     if (user.gyfi < costGyfi) {
       throw e400('У вас недостаточно валюты')
     }
-    const action = await Action.findById(id)
+    const action = await Action.findById(id);
     user.gyfi -= costGyfi;
-    action.vipTime = await new Date(action.vipTime).setHours(action.vipTime.getHours() + hours);
+    action.vipTime = await new Date(action.vipTime).setHours(action.vipTime.getHours() + +hours);
 
     user.save();
     action.save();
@@ -172,7 +172,7 @@ export default(ctx) => {
       }
 
       if (params.vipTime && parseFloat(params.vipTime) > 0) {
-        params.vipTime = new Date(action.vipTime.setHours(action.vipTime.getHours() + params.vipTime));
+        params.vipTime = new Date(action.vipTime.setHours(action.vipTime.getHours() + +params.vipTime));
         user.gyfi = user.gyfi - costGyfi;
         await user.save();
       }
