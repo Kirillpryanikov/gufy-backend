@@ -229,8 +229,11 @@ export default(ctx) => {
       },
     });
     if (!time) {
-      time = Date.now();
+      return {
+        date: new Date(),
+      };
     }
+
     return {
       date: new Date(time + 86400000),
     }
