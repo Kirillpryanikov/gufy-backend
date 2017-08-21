@@ -217,8 +217,22 @@ export default(ctx) => {
       userFind.gyfi += parseInt(freeGyfi.value);
       userFind.save();
     }
-  }
+  };
 
+  controller.getTimeFreeGyfi = async (req) => {
+    isAuth(req);
+    const token = req.headers['x-access-token'];
+    const userObj = jwt.verify(token, ctx.config.jwt.secret);
+    const time = await FreeGyfi.max('date', {
+      where: {
+        userId: userObj.id,
+      },
+    });
+
+    return {
+      date: new Date(time + 86400000),
+    }
+  };
 
   controller.getFreeGyfiBanner = async (req) => {
     isAuth(req);
