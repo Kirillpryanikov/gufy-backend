@@ -223,12 +223,14 @@ export default(ctx) => {
     isAuth(req);
     const token = req.headers['x-access-token'];
     const userObj = jwt.verify(token, ctx.config.jwt.secret);
-    const time = await FreeGyfi.max('date', {
+    let time = await FreeGyfi.max('date', {
       where: {
         userId: userObj.id,
       },
     });
-
+    if (!time) {
+      time = Date.now();
+    }
     return {
       date: new Date(time + 86400000),
     }
