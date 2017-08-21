@@ -51,23 +51,34 @@ export default(ctx) => {
 
   controller.create = async function(req) {
     isAuth(req)
-    // const token = req.headers['x-access-token'];
-    // const userObj = jwt.verify(token, ctx.config.jwt.secret);
-
     const params = req.allParams();
     const owner = await User.findById(req.user.id);
     params.ownerId = owner.id;
-    if (params.vipTime) {
-      const addTime = (parseFloat(params.vipTime) * 3600000) + 86400000;
-      params.vipTime = new Date(Date.now() + addTime);
+
+    if ((+params.vipTime) > 0) {
+      const token = req.headers['x-access-token'];
+      const userObj = jwt.verify(token, ctx.config.jwt.secret);
+
+      let user = await User.findById(userObj.id);
+      const price = await Values.find({
+        where: {
+          name: 'vip-time',
+        },
+      });
+      const costGyfi = +price.value * +params.vipTime;
+      if (user.gyfi < costGyfi) {
+        throw e400('У вас недостаточно валюты');
+      }
+      if (params.vipTime && parseFloat(params.vipTime) > 0) {
+        const currentDate = new Date();
+        params.vipTime = new Date(currentDate.setHours(currentDate.getHours() + +params.vipTime + 24));
+        user.gyfi = user.gyfi - costGyfi;
+        await user.save();
+      }
     } else {
       params.vipTime = new Date(Date.now() + 86400000);
     }
-
     const action = await Action.create(params);
-    // if (params.fixedWinnerId) {
-    //   await Ticket.create({ userId: userObj.id, actionId: action.id, price: params.price})
-    // }
     return action
   }
 
