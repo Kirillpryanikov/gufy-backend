@@ -23,13 +23,18 @@ export default function createModel(ctx) {
     dateGame: {
       type: Sequelize.DATE,
       required: true,
-      default: new Date(),
+      default: Date.now(),
     },
     percentWin: {
       type: Sequelize.INTEGER,
       default: 100,
     },
-  })
+    isFinish: {
+      type: Sequelize.BOOLEAN,
+      required: true,
+      default: false,
+    },
+  });
 
   ctx.models.ScratchGameHistory = ScratchGameHistory
   return ScratchGameHistory

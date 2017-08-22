@@ -11,6 +11,7 @@ export default (ctx) => {
   api.get('/prizes', controller.getPrizes);
   api.get('/history', controller.getHistoryGame);
   api.get('/game', controller.getRandomPrizes);
+  api.get('/game/:id/finish', controller.handlerFinishGame);
 
   api.post('/', controller.create);
 
@@ -20,7 +21,7 @@ export default (ctx) => {
   api.delete('/prize/:id', controller.deletePrize);
   api.delete('/history/:id', controller.deleteHistory);
 
-  api = wrapper(ctx, { model: ScratchGamePrize, api })
+  api = wrapper(ctx, { model: ScratchGamePrize, api });
 
   return api
 }

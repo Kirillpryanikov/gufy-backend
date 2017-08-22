@@ -35,17 +35,22 @@ export default function createModel(ctx) {
       required: true,
       default: true,
     },
+    prizeGyfi: {
+      type: Sequelize.INTEGER,
+      required: true,
+      default: 0,
+    },
     description: {
       type: Sequelize.STRING,
     },
-  })
+  });
 
   ScratchGamePrize.hook('beforeCreate', function (prize) {
     if (prize.image) {
       prize.image = `${ctx.config.url}/${prize.image}`;
     }
-  })
+  });
 
-  ctx.models.ScratchGamePrize = ScratchGamePrize
+  ctx.models.ScratchGamePrize = ScratchGamePrize;
   return ScratchGamePrize
 }
