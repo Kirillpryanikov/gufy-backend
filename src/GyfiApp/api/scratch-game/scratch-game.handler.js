@@ -32,17 +32,9 @@ export default (ctx) => {
       }
     });
 
-    console.log('prizes  ', prizes[0]);
-    console.log('prizes  ', prizes[1]);
-    console.log('prizes  ', prizes[2]);
-    console.log('prizes  ', prizes[3]);
-    console.log('prizes  ', prizes[4]);
-
     prizes = prizes.sort(function(a, b) {
       return a.weight - b.weight;
     });
-
-    console.log('random next row');
 
     const totalWeight = _.last(prizes).weight;
     let random = Math.random() * (0, totalWeight);

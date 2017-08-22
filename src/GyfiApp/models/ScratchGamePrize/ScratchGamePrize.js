@@ -40,6 +40,11 @@ export default function createModel(ctx) {
       required: true,
       default: 0,
     },
+    isWinningPrize: {
+      type: Sequelize.BOOLEAN,
+      required: true,
+      default: false,
+    },
     description: {
       type: Sequelize.STRING,
     },

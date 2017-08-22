@@ -120,7 +120,11 @@ export default (ctx) => {
     const allPrizes = await ScratchGamePrize.findAll({});
 
     const result = await handler.getRandomPrize(allPrizes, getCountGameUser, options);
-
+    _.forEach(result.prizes, prize => {
+        if (prize.id === result.idPrize) {
+          prize.isWinningPrize = true;
+        }
+    });
     /**
      * write game in history
      */
@@ -133,7 +137,6 @@ export default (ctx) => {
           dateGame: new Date(),
         })
     }
-    console.log('idHistoryGame --> ', idHistoryGame.id);
     /**
      *  If prize is not money, needed decrease count prizes
      */
@@ -189,7 +192,7 @@ export default (ctx) => {
       },
     });
 
-    if (prize.isGyfi) {
+    if (prize.isGyfi && +prize.prizeGyfi > 0) {
       user.gyfi += +prize.prizeGyfi;
       scratchGame.isFinish = true;
 
