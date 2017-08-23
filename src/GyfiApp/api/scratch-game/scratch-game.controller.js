@@ -122,7 +122,11 @@ export default (ctx) => {
     const result = await handler.getRandomPrize(allPrizes, getCountGameUser, options);
     _.forEach(result.prizes, prize => {
         if (prize.id === result.idPrize) {
-          prize.isWinningPrize = true;
+          if (prize.isGyfi && prize.prizeGyfi > 0){
+            prize.isWinningPrize = true;
+          } else if (!prize.isGyfi) {
+            prize.isWinningPrize = true;
+          }
         }
     });
     /**
