@@ -73,6 +73,7 @@ export default(ctx, parent) => {
       'get': {
         'summary': 'Найти категорию по ID',
         'tags': ['category'],
+        'parameters': '?page=/number page/  Receive limit - 20',
         'responses': {
           '200': {
             'description': 'Товар',
