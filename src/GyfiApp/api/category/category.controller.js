@@ -5,11 +5,21 @@ export default(ctx) => {
   const controller = {}
 
   controller.products = async function(req) {
-    const params = req.allParams()
-    const categoryId = params.id
-    const products = await Product.findAll({ where: { categoryId: categoryId}, order: '"allocated" DESC' })
+    const params = req.allParams();
+    const categoryId = params.id;
+    const limit = 20;
+    let query = {
+      where: {
+        categoryId: categoryId,
+      }
+    };
+    if (req.query.page) {
+      query.offset = parseInt(params.page) * limit;
+      query.limit = limit;
+    }
+    const products = await Product.findAll(query);
     return products
-  }
+  };
 
   return controller
 }
