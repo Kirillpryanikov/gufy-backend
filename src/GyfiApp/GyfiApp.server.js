@@ -32,6 +32,7 @@ import getSocketHTML from './html/socket'
 
 export default class GyfiApp extends ReactApp {
   init() {
+    console.log('------------------------------------------------------');
     this.addStrategy()
     super.init()
     this.responses = require('./responses')

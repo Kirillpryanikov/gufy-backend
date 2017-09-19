@@ -1,12 +1,14 @@
 export default (ctx, io) => {
-  const namespace = io.of('/chat')
-  namespace.use(io.middlewares.getParams)
-  namespace.use(io.middlewares.parseUser)
-  namespace.use(io.middlewares.isAuth)
-  namespace.use(io.middlewares.socketAsPromised)
+  const namespace = io.of('/chat');
+  namespace.use(io.middlewares.getParams);
+  namespace.use(io.middlewares.parseUser);
+  namespace.use(io.middlewares.isAuth);
+  namespace.use(io.middlewares.socketAsPromised);
+
   namespace.on('connection', async socket => {
-    // console.log('Chat connection!')
-    const { Message, User } = ctx.models
+    console.log('Chat connection!');
+
+    const { Message } = ctx.models
     socket.join(`user_${socket.user.id}`)
     socket.on('message', async function (params) {
       if (!params.text || !params.to) {
@@ -41,6 +43,6 @@ export default (ctx, io) => {
         },
       })
     })
-  })
+  });
   return io
 }
