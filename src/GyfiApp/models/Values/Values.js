@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize'
 
 export default function createModel(ctx) {
-  const sequelize = ctx.sequelize
+  const sequelize = ctx.sequelize;
 
   const Values = sequelize.define('values', {
     name: {
@@ -16,7 +16,7 @@ export default function createModel(ctx) {
     description: {
       type: Sequelize.STRING,
     },
-  })
-  ctx.models.Values = Values
+  });
+  ctx.models.Values = Values;
   return Values;
 }

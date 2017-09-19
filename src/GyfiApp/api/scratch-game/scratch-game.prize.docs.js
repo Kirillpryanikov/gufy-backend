@@ -105,6 +105,23 @@ export default(ctx, parent) => {
         }
       }
     },
+    '/scratch/game/:id/finish': {
+      'get' : {
+        'summary': 'Окончание игры и добавление пользователю гуфи',
+        'tags': ['prize'],
+        'responses': {
+          '200': {
+            'description': 'id - это id истории игры, которая приходит на фронтенд полем idHistory',
+            'schema': {
+              'type': 'object',
+              'items':{
+                '$ref': '#/definitions/ScratchGamePrize'
+              }
+            }
+          }
+        }
+      }
+    },
     '/scratch/prize/:id': {
       'put' : {
         'summary': 'Изменить приз',

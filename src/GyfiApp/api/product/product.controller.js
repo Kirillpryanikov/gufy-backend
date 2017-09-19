@@ -53,12 +53,31 @@ export default(ctx) => {
     const params = req.allParams()
     params.ownerId = req.user.id
     const owner = await User.findById(params.ownerId).then(_checkNotFound('User'))
-    if (params.vipTime) {
-      const addTime = (parseFloat(params.vipTime) * 3600000) + 86400000;
-      params.vipTime = new Date(Date.now() + addTime);
+
+    if ((+params.vipTime) > 0) {
+      const token = req.headers['x-access-token'];
+      const userObj = jwt.verify(token, ctx.config.jwt.secret);
+
+      let user = await User.findById(userObj.id);
+      const price = await Values.find({
+        where: {
+          name: 'vip-time',
+        },
+      });
+      const costGyfi = +price.value * +params.vipTime;
+      if (user.gyfi < costGyfi) {
+        throw e400('У вас недостаточно валюты');
+      }
+      if (params.vipTime && parseFloat(params.vipTime) > 0) {
+        const currentDate = new Date();
+        params.vipTime = new Date(currentDate.setHours(currentDate.getHours() + +params.vipTime + 24));
+        user.gyfi = user.gyfi - costGyfi;
+        await user.save();
+      }
     } else {
       params.vipTime = new Date(Date.now() + 86400000);
     }
+
     const product = await Product.create(params)
     try {
       await owner.updateProductsCount()
@@ -94,7 +113,7 @@ export default(ctx) => {
       }
 
       if (params.vipTime) {
-        params.vipTime = new Date(product.vipTime.setHours(product.vipTime.getHours() + params.vipTime))
+        params.vipTime = new Date(product.vipTime.setHours(product.vipTime.getHours() + +params.vipTime))
         user.gyfi = user.gyfi - costGyfi;
         await user.save();
       }
@@ -156,7 +175,7 @@ export default(ctx) => {
     }
     const product = await Product.findById(id)
     user.gyfi -= costGyfi;
-    product.vipTime = await new Date(product.vipTime).setHours(product.vipTime.getHours() + hours);
+    product.vipTime = await new Date(product.vipTime).setHours(product.vipTime.getHours() + +hours);
 
     user.save();
     product.save();

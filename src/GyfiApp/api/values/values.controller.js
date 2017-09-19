@@ -22,12 +22,28 @@ export default(ctx) => {
   };
 
   controller.getCostVipTime = async (req) => {
-    return Values.find({
+    return await Values.find({
       where: {
         name: 'vip-time',
       },
     })
   }
+
+  controller.getCostScratchGame = async (req) => {
+    return await Values.find({
+      where: {
+        name: 'scratch-cost-game',
+      },
+    });
+  };
+
+  controller.getCountFreeGyfi = async (req) => {
+    return await Values.find({
+      where: {
+        name: 'free-gyfi',
+      },
+    })
+  };
 
   return controller
 }

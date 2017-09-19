@@ -3,16 +3,18 @@ import getController from './values.controller'
 import wrapper from '../wrapper'
 
 export default (ctx) => {
-  const { wrapResourse, createResourse } = ctx.helpers
+  const { wrapResourse, createResourse } = ctx.helpers;
   const { Values } = ctx.models;
   const controller = getController(ctx)
   let api = asyncRouter();
 
   api.get('/', controller.getValues);
   api.put('/:id', controller.updateValue);
-  api.get('/cost/viptime', controller.getCostVipTime)
+  api.get('/cost/viptime', controller.getCostVipTime);
+  api.get('/cost/scratch-game', controller.getCostScratchGame);
+  api.get('/cost/free-gyfi', controller.getCountFreeGyfi);
 
-  api = wrapper(ctx, { model: Values, api })
+  api = wrapper(ctx, { model: Values, api });
 
   return api
 }

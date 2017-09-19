@@ -32,12 +32,12 @@ export default (ctx) => {
 
   controller.updatePrize = async (req) => {
     const params = req.allParams();
-    const { id } = params
+    const { id } = params;
     await ScratchGamePrize.update(params, {
       where: {
         id,
       },
-    })
+    });
     return ScratchGamePrize.findById(id)
   };
 
@@ -48,7 +48,7 @@ export default (ctx) => {
       where: {
         id,
       },
-    })
+    });
     return ScratchGameHistory.findById(id)
   };
 
@@ -79,7 +79,6 @@ export default (ctx) => {
 
     const token = req.headers['x-access-token'];
     const userObj = jwt.verify(token, ctx.config.jwt.secret);
-
 
     /**
      * get option for game
@@ -121,19 +120,27 @@ export default (ctx) => {
     const allPrizes = await ScratchGamePrize.findAll({});
 
     const result = await handler.getRandomPrize(allPrizes, getCountGameUser, options);
-
+    _.forEach(result.prizes, prize => {
+        if (prize.id === result.idPrize) {
+          if (prize.isGyfi && prize.prizeGyfi > 0){
+            prize.isWinningPrize = true;
+          } else if (!prize.isGyfi) {
+            prize.isWinningPrize = true;
+          }
+        }
+    });
     /**
      * write game in history
      */
+    let idHistoryGame;
     if (result.idPrize) {
-      await ScratchGameHistory.create({
+      idHistoryGame = await ScratchGameHistory.create({
           userId: userObj.id,
           prizeId: result.idPrize,
           percentWin: result.userPersent,
           dateGame: new Date(),
         })
     }
-
     /**
      *  If prize is not money, needed decrease count prizes
      */
@@ -152,9 +159,51 @@ export default (ctx) => {
       gyfiUser.gyfi -= costGame;
       await gyfiUser.save()
     }
-    return result.prizes;
+    return {
+      idHistory: idHistoryGame.id,
+      prizes: result.prizes,
+    };
   };
 
+  controller.handlerFinishGame = async (req) => {
+    isAuth(req);
+
+    const token = req.headers['x-access-token'];
+    const userObj = jwt.verify(token, ctx.config.jwt.secret);
+
+    const params = req.allParams();
+    const { id } = params;
+    const scratchGame = await ScratchGameHistory.find({
+      where: {
+        id: id,
+        isFinish: false,
+      },
+    });
+
+    if (!scratchGame) {
+      throw e400('Приз за игру уже был получен')
+    }
+
+    const user = await User.find({
+      where: {
+        id: userObj.id,
+      },
+    });
+
+    const prize = await ScratchGamePrize.find({
+      where: {
+        id: scratchGame.prizeId,
+      },
+    });
+
+    if (prize.isGyfi && +prize.prizeGyfi > 0) {
+      user.gyfi += +prize.prizeGyfi;
+      scratchGame.isFinish = true;
+
+      user.save();
+      scratchGame.save();
+    }
+  };
 
   return controller;
 }

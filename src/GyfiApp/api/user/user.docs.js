@@ -575,6 +575,23 @@ export default(ctx, parent) => {
         },
       },
     },
+    '/user/freegyfi/time': {
+      'get': {
+        'summary': 'Получить время/дату следующих бесплатных гуфи',
+        'tags': ['user'],
+        'responses': {
+          '200': {
+            'description': 'Время/Дата для получения бесплатных гуфи',
+            'schema': {
+              'type': '',
+              'items': {
+                '$ref': '#/definitions/FreeGyfi'
+              }
+            },
+          },
+        },
+      },
+    },
     '/user/banner': {
       'get': {
         'summary': 'Получить беспланые гуфи',

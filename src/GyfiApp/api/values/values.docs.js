@@ -81,8 +81,42 @@ export default(ctx, parent) => {
               }
             }
         }
+      }
+    },
+    '/option/cost/scratch-game': {
+      'get' : {
+        'summary': 'Получить стоимость Scratch Game',
+        'tags': ['object'],
+        'responses': {
+          '200': {
+            'description': 'Объект',
+            'schema': {
+              'type': 'object',
+              'items':{
+                '$ref': '#/definitions/Value'
+              }
+            }
+          }
         }
-    }
+      }
+    },
+    '/option/cost/free-gyfi': {
+      'get' : {
+        'summary': 'Получить количество бесплатных Gyfi',
+        'tags': ['object'],
+        'responses': {
+          '200': {
+            'description': 'Объект',
+            'schema': {
+              'type': 'object',
+              'items':{
+                '$ref': '#/definitions/Value',
+              }
+            }
+          }
+        }
+      }
+    },
   }
 
   const definitions = {
