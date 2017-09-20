@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize'
 export default function createModel(ctx) {
-  const sequelize = ctx.sequelize
+  const sequelize = ctx.sequelize;
   const Message = sequelize.define('message', {
     text: {
       type: Sequelize.STRING,

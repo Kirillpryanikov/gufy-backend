@@ -48,7 +48,6 @@ export default (ctx, params) => {
   api.use('/option', getValuesApi(ctx, params));
   api.use('/scratch', getValuesScretchPrize(ctx, params));
   api.use('/chat', getChatApi(ctx, params));
-  
   // Все остальное
 
   api.post('/image', fileUpload(), async (req) => {

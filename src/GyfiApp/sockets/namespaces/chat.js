@@ -1,5 +1,5 @@
 export default (ctx, io) => {
-  const namespace = io.of('/chat');
+  const namespace = io.of('chat');
   namespace.use(io.middlewares.getParams);
   namespace.use(io.middlewares.parseUser);
   namespace.use(io.middlewares.isAuth);
@@ -19,14 +19,14 @@ export default (ctx, io) => {
         toUserId: params.to,
         text: params.text,
         files: params.files || null,
-      })
-      namespace.to(`user_${params.to}`).emit('message', message)
+      });
+      namespace.to(`user_${params.to}`).emit('message', message);
       return message
-    })
+    });
     // socket.on('getStory', () => Promise.resolve('returned a promise'));
     socket.on('getStory', async (params) => {
-      const userId = socket.user.id
-      const opponentId = params.userId
+      const userId = socket.user.id;
+      const opponentId = params.userId;
       // return Promise.resolve('returned a promise')
       return Message.findAll({
         where: {
