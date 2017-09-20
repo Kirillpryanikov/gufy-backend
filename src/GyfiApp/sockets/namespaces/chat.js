@@ -8,8 +8,8 @@ export default (ctx, io) => {
   namespace.on('connection', async socket => {
     console.log('Chat connection!');
 
-    const { Message } = ctx.models
-    socket.join(`user_${socket.user.id}`)
+    const { Message } = ctx.models;
+    socket.join(`user_${socket.user.id}`);
     socket.on('message', async function (params) {
       if (!params.text || !params.to) {
         return null
@@ -44,5 +44,5 @@ export default (ctx, io) => {
       })
     })
   });
-  return io
+  return io;
 }
