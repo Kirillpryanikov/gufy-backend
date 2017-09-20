@@ -16,6 +16,8 @@ export default (ctx) => {
   io.use(io.middlewares.socketAsPromised);
   addChatNamespace(ctx, io);
 
+  return io;
+
   // ctx.io.on('connection', async (socket) => {
   //   let room = {};
   //   console.log('CONNECTION');

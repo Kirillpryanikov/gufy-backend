@@ -29,6 +29,7 @@ import getSockets from './sockets'
 
 //HTML
 import getSocketHTML from './html/socket'
+import getSocketChatPage from './html/render_chat'
 
 export default class GyfiApp extends ReactApp {
   init() {
@@ -195,6 +196,11 @@ export default class GyfiApp extends ReactApp {
     // this.app.get('/', (req, res) => {
     //   return res.send(this.renderHtml(<div>Lupus home</div>))
     // })
+    // ******************************************
+    this.app.all('/test_chat', (req, res) => {
+      res.send(getSocketChatPage(this));
+    });
+    // ******************************************
     this.app.all('/sockets', (req, res) => {
       return res.send(getSocketHTML())
     })
