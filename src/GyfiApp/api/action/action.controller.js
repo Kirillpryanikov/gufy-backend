@@ -131,8 +131,11 @@ export default(ctx) => {
   controller.complete = async function(req) {
     const params = req.allParams()
     const { id } = params
-    const action = await Action.findById(id)
-    return action.complete()
+    const action = await Action.findById(id);
+    const completeAction = action.complete();
+
+    //Socket
+
   }
 
   controller.extendVipTime = async function (req) {
