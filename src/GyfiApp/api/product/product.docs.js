@@ -147,6 +147,50 @@ export default(ctx, parent) => {
           }
         }
       },
+      '/{id}/apply': {
+        'parameters':[
+          {
+            'name': 'id',
+            'in': 'path',
+            'description':'id',
+            'required': true,
+            'type': 'string',
+          },
+        ],
+        'get': {
+          'summary': 'Потвердить покупку',
+          'tags': ['product'],
+          'responses': {
+            '200': {
+              'description': 'Потвердить покупку',
+              'schema': {
+                '$ref': '#/definitions/Product'
+              }
+            }
+          }
+        },
+        '/{id}/decline': {
+          'parameters':[
+            {
+              'name': 'id',
+              'in': 'path',
+              'description':'id',
+              'required': true,
+              'type': 'string',
+            },
+          ],
+          'get': {
+            'summary': 'Отмена покупки товара',
+            'tags': ['product'],
+            'responses': {
+              '200': {
+                'description': 'Товар',
+                'schema': {
+                  '$ref': '#/definitions/Product'
+                }
+              }
+            }
+          },
       'put': {
         'summary': 'Изменить товар',
         'tags': ['product'],

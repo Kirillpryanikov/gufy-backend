@@ -10,12 +10,12 @@ export default (ctx) => {
   api.get('/old', controller.getOld)
   api.get('/other', controller.getProductsOther)
   api.get('/search', controller.getProductByName)
+  api.get('/:id/apply', controller.apply);
+  api.get('/:id/decline', controller.decline);
 
   api.post('/', controller.create);
   api.put('/:id', controller.update);
   api.post('/:id/buy', controller.buy);
-  api.post('/:id/apply', controller.apply);
-  api.post('/:id/decline', controller.decline);
   api.put('/:id/extend-time', controller.extendVipTime);
 
   api = wrapper(ctx, { model: Product, api })

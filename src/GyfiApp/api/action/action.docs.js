@@ -193,7 +193,14 @@ export default(ctx, parent) => {
           'in': 'path',
           'description': 'id',
           'required': true,
-          'type': 'string'
+          'type': 'string',
+        },
+        {
+          'name': 'count',
+          'in': 'POST JSON',
+          'description': 'Count of tickets',
+          'required': false,
+          'type': 'integer'
         }
       ],
       'post': {
