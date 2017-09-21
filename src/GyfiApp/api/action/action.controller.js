@@ -80,7 +80,7 @@ export default(ctx) => {
     }
     const action = await Action.create(params);
     return action
-  }
+  };
 
   controller.join = async function(req) {
     isAuth(req);
@@ -90,15 +90,20 @@ export default(ctx) => {
     const userId = req.user.id;
     const user = await User.findById(userId).then(checkNotFound);
     const action = await Action.findById(actionId).then(checkNotFound);
-
-    if (user.gyfi < action.price) {
+    const count = (params.count !== undefined && params.count !== 0) ? params.count : 1;
+    const price = action.price * count;
+    if (user.gyfi < price) {
       throw e400('У вас недостаточно валюты')
     }
-    const ticket = await Ticket.create({ userId, actionId, price: action.price });
+    const tickets = [];
+    for (let i = 0; i < count; i++) {
+      let ticket = await Ticket.create({ userId, actionId, price: action.price });
+      await ticket.save();
+      tickets.push(ticket);
+    }
     user.gyfi -= action.price;
-    await ticket.save();
     await user.save();
-    return { action, ticket }
+    return { action, tickets };
   };
 
   controller.users = async function(req) {
