@@ -131,32 +131,78 @@ export default(ctx) => {
 
 
   controller.buy = async function(req) {
-    isAuth(req)
-    const params = req.allParams()
-    const { id } = params
-    const userId = req.user.id
-    const buyer = await User.findById(userId).then(checkNotFound)
-    const product = await Product.findById(id).then(checkNotFound)
+    isAuth(req);
+    const params = req.allParams();
+    const { id } = params;
+    const userId = req.user.id;
+    const buyer = await User.findById(userId).then(checkNotFound);
+    const product = await Product.findById(id).then(checkNotFound);
     if (buyer.gyfi < product.price) {
       throw e400('У вас недостаточно валюты')
     }
-    if (product.status === 'BOUGHT') {
+    if (product.status === 'BOUGHT' && product.status === 'INPROCESS') {
       throw e400('Продукт уже кем то куплен')
     }
-    const owner = await User.findById(product.ownerId).then(checkNotFound)
-    product.buyerId = buyer.id
-    product.status = 'BOUGHT'
-    buyer.gyfi -= product.price
-    owner.gyfi += product.price
-    buyer.buysCount += 1
-    await product.save()
-    await buyer.save()
+    product.buyerId = buyer.id;
+    product.status = 'INPROCESS';
+    buyer.gyfi -= product.price;
+    buyer.buysCount += 1;
+    await product.save();
+    await buyer.save();
 
     return product
-  }
+  };
+
+  /**
+   * Apply product buy
+   * @param req
+   * @returns {Promise.<boolean>}
+   */
+  controller.apply = async (req) => {
+    isAuth(req);
+    const { id } = req.allParams();
+    /** Check user **/
+    const token = req.headers['x-access-token'];
+    const userObj = jwt.verify(token, ctx.config.jwt.secret);
+    /** Get product **/
+    const product = await Product.findById(id).then(checkNotFound);
+    const owner = await User.findById(product.ownerId).then(checkNotFound);
+    if (userObj.id === product.ownerId) {
+      product.isOwnerApply = true;
+    } else if (userObj.id === product.buyerId) {
+      product.isBuyerApply = true;
+    }
+    if (product.isBuyerApply && product.isOwnerApply) {
+      /** Change price **/
+      owner.gyfi += product.price;
+      owner.save();
+      product.status = 'BOUGHT';
+      product.save();
+    }
+    return product;
+  };
+
+  /**
+   * Decline product buy
+   * @param req
+   * @returns {Promise.<void>}
+   */
+  controller.decline = async (req) => {
+    isAuth(req);
+    const { id } = req.allParams();
+    /** Get product **/
+    const product = await Product.findById(id).then(checkNotFound);
+    const buyer = await User.findById(product.buyerId).then(checkNotFound);
+    /** Return money to buyer **/
+    buyer.gyfi += product.price;
+    buyer.save();
+    product.status = 'REVIEW';
+    product.save();
+    return product;
+  };
 
   controller.extendVipTime = async function (req) {
-    const params = req.allParams()
+    const params = req.allParams();
     const { id, hours } = params;
 
     const token = req.headers['x-access-token'];
