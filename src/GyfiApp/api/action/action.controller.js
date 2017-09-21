@@ -83,21 +83,21 @@ export default(ctx) => {
   }
 
   controller.join = async function(req) {
-    isAuth(req)
-    const params = req.allParams()
-    const { id } = params
-    const actionId = id
-    const userId = req.user.id
-    const user = await User.findById(userId).then(checkNotFound)
-    const action = await Action.findById(actionId).then(checkNotFound)
+    isAuth(req);
+    const params = req.allParams();
+    const { id } = params;
+    const actionId = id;
+    const userId = req.user.id;
+    const user = await User.findById(userId).then(checkNotFound);
+    const action = await Action.findById(actionId).then(checkNotFound);
 
     if (user.gyfi < action.price) {
       throw e400('У вас недостаточно валюты')
     }
-    const ticket = await Ticket.create({ userId, actionId, price: action.price })
-    user.gyfi -= action.price
-    await ticket.save()
-    await user.save()
+    const ticket = await Ticket.create({ userId, actionId, price: action.price });
+    user.gyfi -= action.price;
+    await ticket.save();
+    await user.save();
     return { action, ticket }
   }
 
@@ -121,19 +121,19 @@ export default(ctx) => {
   }
 
   controller.tickets = async function(req) {
-    const params = req.allParams()
-    const id = params.id
-    const action = await Action.findById(id)
+    const params = req.allParams();
+    const id = params.id;
+    const action = await Action.findById(id);
     const tickets = await action.getTickets()
     return tickets
   }
 
   controller.complete = async function(req) {
-    const params = req.allParams()
-    const { id } = params
-    const action = await Action.findById(id)
+    const params = req.allParams();
+    const { id } = params;
+    const action = await Action.findById(id);
     return action.complete()
-  }
+  };
 
   controller.extendVipTime = async function (req) {
     const token = req.headers['x-access-token'];
@@ -163,8 +163,8 @@ export default(ctx) => {
 
   controller.update = async function(req) {
     isAuth(req);
-    const params = req.allParams()
-    const { id } = params
+    const params = req.allParams();
+    const { id } = params;
     let action = await Action.findById(id);
 
     if (parseFloat(params.vipTime) > 0) {

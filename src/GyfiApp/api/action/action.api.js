@@ -2,7 +2,6 @@ import asyncRouter from 'lego-starter-kit/utils/AsyncRouter'
 import getController from './action.controller'
 import wrapper from '../wrapper'
 export default (ctx) => {
-  const { wrapResourse, createResourse } = ctx.helpers
   const { Action } = ctx.models
   const controller = getController(ctx)
   let api = asyncRouter();
