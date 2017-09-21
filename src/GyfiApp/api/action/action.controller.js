@@ -3,8 +3,8 @@ var jwt = require('jsonwebtoken');
 const moment = require('moment');
 
 export default(ctx) => {
-  const { User, Action, Ticket, Values } = ctx.models
-  const { checkNotFound, isAuth, _checkNotFound } = ctx.helpers
+  const { User, Action, Ticket, Values } = ctx.models;
+  const { checkNotFound, isAuth } = ctx.helpers;
   const { e400 } = ctx.errors
   const controller = {}
 
@@ -27,30 +27,30 @@ export default(ctx) => {
     return actions
   }
 
-  controller.getOld = async function(req) {
+  controller.getOld = async function() {
     const actions = await Action.findAll({
       where: {
         vipTime: {
           $lt: new Date(),
         },
       },
-    })
+    });
     return actions
-  }
+  };
 
-  controller.getProductsOther = async function(req) {
+  controller.getProductsOther = async function() {
     const actions = await Action.findAll({
       where: {
         vipTime: {
           $eq: null,
         },
       },
-    })
+    });
     return actions
-  }
+  };
 
   controller.create = async function(req) {
-    isAuth(req)
+    isAuth(req);
     const params = req.allParams();
     const owner = await User.findById(req.user.id);
     params.ownerId = owner.id;
@@ -80,33 +80,38 @@ export default(ctx) => {
     }
     const action = await Action.create(params);
     return action
-  }
+  };
 
   controller.join = async function(req) {
-    isAuth(req)
-    const params = req.allParams()
-    const { id } = params
-    const actionId = id
-    const userId = req.user.id
-    const user = await User.findById(userId).then(checkNotFound)
-    const action = await Action.findById(actionId).then(checkNotFound)
-
-    if (user.gyfi < action.price) {
+    isAuth(req);
+    const params = req.allParams();
+    const { id } = params;
+    const actionId = id;
+    const userId = req.user.id;
+    const user = await User.findById(userId).then(checkNotFound);
+    const action = await Action.findById(actionId).then(checkNotFound);
+    const count = (params.count !== undefined && params.count !== 0) ? params.count : 1;
+    const price = action.price * count;
+    if (user.gyfi < price) {
       throw e400('У вас недостаточно валюты')
     }
-    const ticket = await Ticket.create({ userId, actionId, price: action.price })
-    user.gyfi -= action.price
-    await ticket.save()
-    await user.save()
-    return { action, ticket }
-  }
+    const tickets = [];
+    for (let i = 0; i < count; i++) {
+      let ticket = await Ticket.create({ userId, actionId, price: action.price });
+      await ticket.save();
+      tickets.push(ticket);
+    }
+    user.gyfi -= action.price;
+    await user.save();
+    return { action, tickets };
+  };
 
   controller.users = async function(req) {
-    const params = req.allParams()
+    const params = req.allParams();
     const id = params.id
     // const action = await Action.findById(id)
     // .then(_checkNotFound('Action'))
-    const tickets = await Ticket.findAll({ where: {actionId: id} })
+    const tickets = await Ticket.findAll({ where: { actionId: id } });
     const userIds = []
     console.log('Size array -> ', tickets.length);
     tickets.forEach((ticket) => {
@@ -121,27 +126,24 @@ export default(ctx) => {
   }
 
   controller.tickets = async function(req) {
-    const params = req.allParams()
-    const id = params.id
-    const action = await Action.findById(id)
-    const tickets = await action.getTickets()
+    const params = req.allParams();
+    const id = params.id;
+    const action = await Action.findById(id);
+    const tickets = await action.getTickets();
     return tickets
-  }
+  };
 
   controller.complete = async function(req) {
-    const params = req.allParams()
-    const { id } = params
+    const params = req.allParams();
+    const { id } = params;
     const action = await Action.findById(id);
-    const completeAction = action.complete();
-
-    //Socket
-
-  }
+    return action.complete();
+  };
 
   controller.extendVipTime = async function (req) {
     const token = req.headers['x-access-token'];
     const userObj = jwt.verify(token, ctx.config.jwt.secret);
-    const params = req.allParams()
+    const params = req.allParams();
     const { id, hours } = params;
     const price = await Values.find({
       where: {
@@ -166,8 +168,8 @@ export default(ctx) => {
 
   controller.update = async function(req) {
     isAuth(req);
-    const params = req.allParams()
-    const { id } = params
+    const params = req.allParams();
+    const { id } = params;
     let action = await Action.findById(id);
 
     if (parseFloat(params.vipTime) > 0) {

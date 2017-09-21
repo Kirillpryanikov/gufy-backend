@@ -20,6 +20,7 @@ export default () => {
       </div>
       <input class = 'text-input form-control' placeholder='Текст' socket='1'>
     </div>
+    
     <div class = 'col-md-6'>
       <h3>Токен</h3>
       <input class = 'token-input form-control' placeholder='Токен' token='2'>

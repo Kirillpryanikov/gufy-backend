@@ -12,6 +12,7 @@ import getSocialNetworkApi from './socialNetwork/socialNetwork.api'
 import getDeviceApi from './device/device.api';
 import getValuesApi from './values/values.api';
 import getValuesScretchPrize from './scratch-game/scratch-game.api';
+import getChatApi from './chat/chat.api';
 
 import fileUpload from 'express-fileupload'
 
@@ -46,6 +47,7 @@ export default (ctx, params) => {
   api.use('/device', getDeviceApi(ctx, params));
   api.use('/option', getValuesApi(ctx, params));
   api.use('/scratch', getValuesScretchPrize(ctx, params));
+  api.use('/chat', getChatApi(ctx, params));
   // Все остальное
 
   api.post('/image', fileUpload(), async (req) => {

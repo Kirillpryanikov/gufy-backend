@@ -1,8 +1,7 @@
 import Sequelize from 'sequelize'
-import validator from 'validator'
 
 export default function createModel(ctx) {
-  const sequelize = ctx.sequelize
+  const sequelize = ctx.sequelize;
 
   const Product = sequelize.define('product', {
     title: {
@@ -40,9 +39,17 @@ export default function createModel(ctx) {
       //   key: 'id',
       // },
     },
+    isOwnerApply: {
+      type: Sequelize.BOOLEAN,
+      allowNull: true,
+    },
+    isBuyerApply: {
+      type: Sequelize.BOOLEAN,
+      allowNull: true,
+    }
     status: {
       type: Sequelize.ENUM,
-      values: ['REVIEW', 'BOUGHT', 'ACCEPTED', 'DECLINED'],
+      values: ['REVIEW', 'BOUGHT', 'ACCEPTED', 'DECLINED', 'INPROCESS'],
       defaultValue: 'REVIEW',
       allowNull: false,
     },
@@ -75,7 +82,7 @@ export default function createModel(ctx) {
         const product = this.dataValues
         product.vip = this.get('vip')
         product.images = this.get('images')
-        product.images = transformationStringIntoArray(product.images);
+        product.images = strToArray(product.images);
         if (product.images) {
           product.images = this.get('images')
         } else {
@@ -150,7 +157,7 @@ export default function createModel(ctx) {
   return Product
 }
 
-function transformationStringIntoArray(array) {
+function strToArray(array) {
   array = array.replace(/\[|\]/g, '');
   array = array.replace(/"/g, '');
   array = array.replace(/\\/g, '');

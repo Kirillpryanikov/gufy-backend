@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize'
 export default function createModel(ctx) {
-  const sequelize = ctx.sequelize
+  const sequelize = ctx.sequelize;
   const Message = sequelize.define('message', {
     text: {
       type: Sequelize.STRING,
@@ -18,6 +18,7 @@ export default function createModel(ctx) {
       allowNull: false,
       required: true,
     },
+    roomId: Sequelize.STRING
   }, {
     instanceMethods: {
       toJSON() {
