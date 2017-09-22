@@ -46,7 +46,7 @@ export default function createModel(ctx) {
     isBuyerApply: {
       type: Sequelize.BOOLEAN,
       allowNull: true,
-    }
+    },
     status: {
       type: Sequelize.ENUM,
       values: ['REVIEW', 'BOUGHT', 'ACCEPTED', 'DECLINED', 'INPROCESS'],

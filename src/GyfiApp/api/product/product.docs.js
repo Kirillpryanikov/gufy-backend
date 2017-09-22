@@ -126,11 +126,11 @@ export default(ctx, parent) => {
       }
     },
     '/product/{id}': {
-      'parameters':[
+      'parameters': [
         {
           'name': 'id',
           'in': 'path',
-          'description':'id',
+          'description': 'id',
           'required': true,
           'type': 'string',
         },
@@ -148,11 +148,11 @@ export default(ctx, parent) => {
         }
       },
       '/{id}/apply': {
-        'parameters':[
+        'parameters': [
           {
             'name': 'id',
             'in': 'path',
-            'description':'id',
+            'description': 'id',
             'required': true,
             'type': 'string',
           },
@@ -170,11 +170,11 @@ export default(ctx, parent) => {
           }
         },
         '/{id}/decline': {
-          'parameters':[
+          'parameters': [
             {
               'name': 'id',
               'in': 'path',
-              'description':'id',
+              'description': 'id',
               'required': true,
               'type': 'string',
             },
@@ -191,103 +191,104 @@ export default(ctx, parent) => {
               }
             }
           },
-      'put': {
-        'summary': 'Изменить товар',
-        'tags': ['product'],
-        'parameters': putParameters,
-        'responses': {
-          '200': {
-            'description': 'Товар',
-            'schema': {
-              '$ref': '#/definitions/Product'
+          'put': {
+            'summary': 'Изменить товар',
+            'tags': ['product'],
+            'parameters': putParameters,
+            'responses': {
+              '200': {
+                'description': 'Товар',
+                'schema': {
+                  '$ref': '#/definitions/Product'
+                }
+              }
             }
-          }
-        }
-      },
-      'delete': {
-        'summary': 'Удалить товар',
-        'tags': ['product'],
-        'responses': {
-          '200': {
-            'description': 'Товар',
-            'schema': {
-              '$ref': '#/definitions/Product'
+          },
+          'delete': {
+            'summary': 'Удалить товар',
+            'tags': ['product'],
+            'responses': {
+              '200': {
+                'description': 'Товар',
+                'schema': {
+                  '$ref': '#/definitions/Product'
+                }
+              }
             }
-          }
-        }
-      },
-    },
-    '/product/{id}/buy': {
-      'parameters':[
-        {
-          'name': 'id',
-          'in': 'path',
-          'description':'id',
-          'required': true,
-          'type': 'string',
+          },
         },
-      ],
-      'post': {
-        'summary': 'Купить товар',
-        'tags': ['product'],
-        'responses': {
-          '200': {
-            'description': 'Товар',
-            'schema': {
-              '$ref': '#/definitions/Product'
+        '/product/{id}/buy': {
+          'parameters': [
+            {
+              'name': 'id',
+              'in': 'path',
+              'description': 'id',
+              'required': true,
+              'type': 'string',
+            },
+          ],
+          'post': {
+            'summary': 'Купить товар',
+            'tags': ['product'],
+            'responses': {
+              '200': {
+                'description': 'Товар',
+                'schema': {
+                  '$ref': '#/definitions/Product'
+                }
+              }
             }
-          }
-        }
-      },
-    },
-    '/product/search': {
-      'get': {
-        'summary': 'Найти товар по имени',
-        'parameters': '?name=/title product/&viptime=/boolean/',
-        'tags': ['product'],
-        'responses': {
-          '200': {
-            'description': 'Товар',
-            'schema': {
-              '$ref': '#/definitions/Product'
+          },
+        },
+        '/product/search': {
+          'get': {
+            'summary': 'Найти товар по имени',
+            'parameters': '?name=/title product/&viptime=/boolean/',
+            'tags': ['product'],
+            'responses': {
+              '200': {
+                'description': 'Товар',
+                'schema': {
+                  '$ref': '#/definitions/Product'
+                }
+              }
             }
-          }
-        }
-      },
-    },
+          },
+        },
 
-    '/product/{id}/extend-time': {
-      'parameters':[
-        {
-          'name': 'id',
-          'in': 'path',
-          'description':'id',
-          'required': true,
-          'type': 'string',
-        },
-        {
-          'name': 'hours',
-          'in': 'path',
-          'description':'count hours',
-          'required': true,
-          'type': 'number',
-        }
-      ],
-      'put': {
-        'summary': 'Продлить Vip Time для продукта',
-        'tags': ['product'],
-        'responses': {
-          '200': {
-            'description': 'Товар',
-            'schema': {
-              '$ref': '#/definitions/Product'
+        '/product/{id}/extend-time': {
+          'parameters': [
+            {
+              'name': 'id',
+              'in': 'path',
+              'description': 'id',
+              'required': true,
+              'type': 'string',
+            },
+            {
+              'name': 'hours',
+              'in': 'path',
+              'description': 'count hours',
+              'required': true,
+              'type': 'number',
             }
-          }
+          ],
+          'put': {
+            'summary': 'Продлить Vip Time для продукта',
+            'tags': ['product'],
+            'responses': {
+              '200': {
+                'description': 'Товар',
+                'schema': {
+                  '$ref': '#/definitions/Product'
+                }
+              }
+            }
+          },
         }
       },
     }
   }
-
   const definitions = {
     Product: {
       type: 'object',
