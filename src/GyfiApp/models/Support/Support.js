@@ -17,6 +17,9 @@ export default function createModel(ctx) {
       allowNull: false,
       required: true,
     },
+    avatar: {
+      type: Sequelize.STRING,
+    },
     isRead: {
       type: Sequelize.BOOLEAN,
       required: true,

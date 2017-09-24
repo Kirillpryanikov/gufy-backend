@@ -18,6 +18,7 @@ export default (ctx) => {
         email: user.email,
         firstName: userObj.firstName,
         phoneNumbers: user.phoneNumbers,
+        avatar: user.avatar,
         data: Date.now(),
         isRead: false,
       };
@@ -27,7 +28,7 @@ export default (ctx) => {
   };
 
   controller.getUnreadMessage = async function (req) {
-    isAuth(req);
+    // isAuth(req);
     const messages = await Support.findAll({
       where: {
         isRead: false,
