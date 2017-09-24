@@ -18,7 +18,7 @@ export default function createModel(ctx) {
       allowNull: false,
       required: true,
     },
-    roomId: Sequelize.STRING
+    roomId: Sequelize.STRING,
   }, {
     instanceMethods: {
       toJSON() {

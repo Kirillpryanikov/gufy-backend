@@ -4,6 +4,7 @@ import getParams from './middleware/getParams'
 import socketAsPromised from 'socket.io-as-promised'
 
 export default (ctx) => {
+  console.log('------------------------------***-----------')
   const io = ctx.io;
   io.middlewares = {
     getParams: getParams(ctx),
@@ -15,15 +16,15 @@ export default (ctx) => {
   io.use(io.middlewares.socketAsPromised);
   /** Database connect **/
   const { Message } = ctx.models;
-
   ctx.io.on('connection', async (socket) => {
+    console.log('Step 1   connection')
     socket.on('startChat', (userData) => {
-        /** Find chat if exist **/
+      /** Find chat if exist **/
       if (userData.to !== userData.from) {
         Message.findAll({
           where: {
-            fromUserId: { $or: [userData.to, userData.from] },
-            toUserId: { $or: [userData.to, userData.from] },
+            fromUserId: {$or: [userData.to, userData.from]},
+            toUserId: {$or: [userData.to, userData.from]},
           },
           raw: true,
         }).then(room => {
@@ -41,12 +42,19 @@ export default (ctx) => {
             });
             socket.emit(roomId, { message: message });
           });
-          socket.emit('chat_' + userData.to, { messages: room, idRoom: roomId });
-          socket.emit('chat_' + userData.from, { messages: room, idRoom: roomId });
-
+          socket.emit('chat_' + userData.to, {messages: room, idRoom: roomId});
+          socket.emit('chat_' + userData.from, {messages: room, idRoom: roomId});
         });
       }
     });
-  });
-}
+
+    // /** Create Room for Admin Chat */
+    // socket.on('supportChat', (data) => {
+    //   if (data.userId) {
+    //     socket.emit('support', data);
+    //     socket.emit('support_chat' + data.idUser, data);
+    //   }
+    // })
+  })
+};
 
