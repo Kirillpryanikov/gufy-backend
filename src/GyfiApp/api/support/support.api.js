@@ -8,6 +8,7 @@ export default (ctx) => {
 
   api.get('/', controller.getUnreadMessage);
   api.get('/read/:id', controller.readMessage);
+  api.get('/:id/messages', controller.getMessagesByIdUser);
 
   api.post('/', controller.sendMessage);
 

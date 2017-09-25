@@ -1,4 +1,5 @@
 let jwt = require('jsonwebtoken');
+let _ = require('lodash');
 
 export default (ctx) => {
   const { Support, User } = ctx.models;
@@ -28,7 +29,6 @@ export default (ctx) => {
   };
 
   controller.getUnreadMessage = async function (req) {
-    // isAuth(req);
     const messages = await Support.findAll({
       where: {
         isRead: false,
@@ -37,13 +37,30 @@ export default (ctx) => {
     return messages;
   };
 
-  controller.readMessage = async function (req) {
-    isAuth(req);
+  controller.getMessagesByIdUser = async function (req) {
     const params = req.allParams();
-    const message = await Support.findById(params.id);
-    message.isRead = true;
-    message.save();
-    return message;
+    const messages = await Support.findAll({
+      where: {
+        isRead: false,
+        userId: params.id,
+      },
+    });
+    return messages;
+  };
+
+  controller.readMessage = async function (req) {
+    const params = req.allParams();
+    const messages = await Support.findAll({
+      where: {
+        userId: params.id,
+        isRead: false,
+      },
+    });
+    _.forEach(messages, message => {
+      message.isRead = true;
+      message.save();
+    });
+    return messages;
   };
 
   return controller
