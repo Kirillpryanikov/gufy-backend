@@ -10,7 +10,7 @@ import getPostDocs from './post/post.docs'
 import getValuesDocs from './values/values.docs'
 import getScratchGamePrize from './scratch-game/scratch-game.prize.docs';
 import getScratchGameHistory from './scratch-game/scratch-game.history.docs';
-
+import getSupportDocs from './support/support.docs';
 
 // import getActionDocs from './action/action.docs'
 export default function getDocs(ctx, params) {
@@ -25,6 +25,7 @@ export default function getDocs(ctx, params) {
   const valueDocs = getValuesDocs(ctx);
   const scratchGamePrizeDocs = getScratchGamePrize(ctx);
   const scratchGameHistory = getScratchGameHistory(ctx);
+  const support = getSupportDocs(ctx);
 
   const docs = Object.assign({
     "swagger": "2.0",
@@ -37,9 +38,10 @@ export default function getDocs(ctx, params) {
     ],
     "basePath": "/v1",
     "produces": ["application/json"],
-    "paths": Object.assign(userDocs.paths, authDocs.paths, productDocs.paths, categoryDocs.paths, actionDocs.paths, ticketDocs.paths, wallDocs.paths, postDocs.paths, valueDocs.paths, scratchGamePrizeDocs.paths, scratchGameHistory.paths),
-    "definitions": Object.assign(userDocs.definitions, authDocs.definitions, productDocs.definitions, categoryDocs.definitions, actionDocs.definitions, ticketDocs.definitions, wallDocs.definitions, postDocs.definitions, valueDocs.definitions, scratchGamePrizeDocs.definitions, scratchGameHistory.definitions)
+    "paths": Object.assign(userDocs.paths, authDocs.paths, productDocs.paths, categoryDocs.paths, actionDocs.paths, ticketDocs.paths, wallDocs.paths, postDocs.paths, valueDocs.paths, scratchGamePrizeDocs.paths, scratchGameHistory.paths, support.paths),
+    "definitions": Object.assign(userDocs.definitions, authDocs.definitions, productDocs.definitions, categoryDocs.definitions, actionDocs.definitions, ticketDocs.definitions, wallDocs.definitions, postDocs.definitions, valueDocs.definitions, scratchGamePrizeDocs.definitions, scratchGameHistory.definitions, support.definitions)
 
-  }, params)
+  }, params);
   return docs
 }
+

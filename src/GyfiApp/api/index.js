@@ -15,7 +15,6 @@ import getValuesScretchPrize from './scratch-game/scratch-game.api';
 import getChatApi from './chat/chat.api';
 import getSupportApi from './support/support.api';
 
-
 import fileUpload from 'express-fileupload'
 
 export default (ctx, params) => {
