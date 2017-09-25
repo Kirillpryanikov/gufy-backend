@@ -65,6 +65,7 @@ export default (ctx) => {
             isRead: false,
           };
           await Support.create(params);
+          socket.emit('support', params);
         }
       }
     })
