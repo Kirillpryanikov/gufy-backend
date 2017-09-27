@@ -1,5 +1,6 @@
-var jwt = require('jsonwebtoken');
-import _ from 'lodash'
+let jwt = require('jsonwebtoken');
+import _ from 'lodash';
+import { socketConnected } from '../../sockets';
 
 export default(ctx) => {
   const controller = {}
@@ -129,20 +130,24 @@ export default(ctx) => {
     return Product.findById(id);
   };
 
-
   controller.buy = async function(req) {
     isAuth(req);
     const params = req.allParams();
     const { id } = params;
-    const userId = req.user.id;
-    const buyer = await User.findById(userId).then(checkNotFound);
+    const userObj = jwt.verify(req.headers['x-access-token'], ctx.config.jwt.secret);
+    const buyer = await User.findById(userObj.id).then(checkNotFound);
     const product = await Product.findById(id).then(checkNotFound);
     if (buyer.gyfi < product.price) {
       throw e400('У вас недостаточно валюты')
     }
-    if (product.status === 'BOUGHT' && product.status === 'INPROCESS') {
+    if (product.status !== 'REVIEW') {
       throw e400('Продукт уже кем то куплен')
     }
+    const roomId = userObj.id + product.ownerId;
+    const socket = socketConnected();
+    socket.emit('chat_' + product.ownerId, {messages: 'Ваш товар ' + product.title + ' куплен', idRoom: roomId});
+    socket.emit('chat_' + userObj.id, {messages: 'Владелец товара о покупке ' + product.title + ' оповещен', idRoom: roomId});
+
     product.buyerId = buyer.id;
     product.status = 'INPROCESS';
     buyer.gyfi -= product.price;
@@ -154,6 +159,48 @@ export default(ctx) => {
   };
 
   /**
+   * When owner Sent product
+   * @param req
+   */
+  controller.sentProduct = async (req) => {
+    isAuth(req);
+    const { id } = req.allParams();
+    /** Check user **/
+    const userObj = jwt.verify(req.headers['x-access-token'], ctx.config.jwt.secret);
+    const product = await Product.findById(id).then(checkNotFound);
+    /** Owner Check status product to SENT */
+    if (product.ownerId == userObj.id && product.status === 'INPROCESS') {
+      product.status = 'SENT';
+      await product.save();
+      const socket = socketConnected();
+      const roomId = userObj.id + product.buyerId;
+      socket.emit('chat_' + product.buyerId, {messages: 'Товар ' + product.title + ' отправлен', idRoom: roomId});
+      socket.emit('chat_' + userObj.id, {messages: 'Товар ' + product.title + ' отправлен', idRoom: roomId});
+      return product;
+    } else {
+      throw e400('Товар не удалось отправить');
+    }
+  };
+  /**
+   * Owner check status product
+   * @param req
+  */
+  controller.deliveredProduct = async (req) => {
+    isAuth(req);
+    const { id } = req.allParams();
+    /** Check user **/
+    const userObj = jwt.verify(req.headers['x-access-token'], ctx.config.jwt.secret);
+    const product = await Product.findById(id).then(checkNotFound);
+    /** Owner Check status product to DELIVERED */
+    if (product.ownerId == userObj.id && product.status === 'SENT') {
+      product.status = 'DELIVERED';
+      await product.save();
+      return product;
+    } else {
+      throw e400('Товар не был доставлен');
+    }
+  };
+  /**
    * Apply product buy
    * @param req
    * @returns {Promise.<boolean>}
@@ -162,22 +209,23 @@ export default(ctx) => {
     isAuth(req);
     const { id } = req.allParams();
     /** Check user **/
-    const token = req.headers['x-access-token'];
-    const userObj = jwt.verify(token, ctx.config.jwt.secret);
+    const userObj = jwt.verify(req.headers['x-access-token'], ctx.config.jwt.secret);
     /** Get product **/
     const product = await Product.findById(id).then(checkNotFound);
     const owner = await User.findById(product.ownerId).then(checkNotFound);
-    if (userObj.id === product.ownerId) {
-      product.isOwnerApply = true;
-    } else if (userObj.id === product.buyerId) {
-      product.isBuyerApply = true;
-    }
-    if (product.isBuyerApply && product.isOwnerApply) {
+
+    if (userObj.id == product.buyerId && product.status === 'DELIVERED' && product.buyerId !== product.ownerId) {
       /** Change price **/
       owner.gyfi += product.price;
       owner.save();
       product.status = 'BOUGHT';
-      product.save();
+      await product.save();
+      const socket = socketConnected();
+      const roomId = userObj.id + product.buyerId;
+      socket.emit('chat_' + product.ownerId, {messages: 'Товар ' + product.title + ' получен', idRoom: roomId});
+      socket.emit('chat_' + userObj.id, {messages: 'Товар ' + product.title + ' получен', idRoom: roomId});
+    } else {
+      throw e400('Не удалось купить товар');
     }
     return product;
   };
@@ -199,6 +247,20 @@ export default(ctx) => {
     product.status = 'REVIEW';
     product.save();
     return product;
+  };
+  /**
+   * Get Sold products
+   * @param req
+   */
+  controller.getSoldProducts = async (req) => {
+    isAuth(req);
+    const userObj = jwt.verify(req.headers['x-access-token'], ctx.config.jwt.secret);
+    return await Product.findAll({
+      where: {
+        ownerId: userObj.id,
+        status: 'BOUGHT',
+      },
+    });
   };
 
   controller.extendVipTime = async function (req) {

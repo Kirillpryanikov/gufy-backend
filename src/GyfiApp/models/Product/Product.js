@@ -39,17 +39,9 @@ export default function createModel(ctx) {
       //   key: 'id',
       // },
     },
-    isOwnerApply: {
-      type: Sequelize.BOOLEAN,
-      allowNull: true,
-    },
-    isBuyerApply: {
-      type: Sequelize.BOOLEAN,
-      allowNull: true,
-    },
     status: {
       type: Sequelize.ENUM,
-      values: ['REVIEW', 'BOUGHT', 'ACCEPTED', 'DECLINED', 'INPROCESS'],
+      values: ['REVIEW', 'BOUGHT', 'ACCEPTED', 'DECLINED', 'SENT', 'DELIVERED', 'INPROCESS'],
       defaultValue: 'REVIEW',
       allowNull: false,
     },

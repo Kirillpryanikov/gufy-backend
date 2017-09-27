@@ -25,7 +25,7 @@ import fetch from 'node-fetch'
 import getSchedule from './services/schedule'
 
 import socketIO from 'socket.io'
-import getSockets from './sockets'
+import { getSockets } from './sockets'
 
 //HTML
 import getSocketHTML from './html/socket'
@@ -33,7 +33,6 @@ import getSocketChatPage from './html/render_chat'
 
 export default class GyfiApp extends ReactApp {
   init() {
-    console.log('------------------------------------------------------');
     this.addStrategy()
     super.init()
     this.responses = require('./responses')
