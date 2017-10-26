@@ -2,6 +2,7 @@ import parseUser from './middleware/parseUser'
 import isAuth from './middleware/isAuth'
 import getParams from './middleware/getParams'
 import socketAsPromised from 'socket.io-as-promised';
+var jwt = require('jsonwebtoken');
 
 let socketC;
 module.exports = {
@@ -20,34 +21,10 @@ module.exports = {
     const { Message, User, Support, TimeDisconnectUser } = ctx.models;
     ctx.io.on('connection', async (socket) => {
       socketC = socket;
+
       socket.on('sendMessage', (userData) => {
         /** Find chat if exist **/
         if (userData.to !== userData.from) {
-          // Message.findAll({
-          //   where: {
-          //     fromUserId: {$or: [userData.to, userData.from]},
-          //     toUserId: {$or: [userData.to, userData.from]},
-          //   },
-          //   raw: true,
-          // }).then(room => {
-          //   if (room === undefined) {
-          //     room = {};
-          //   }
-          //   /**  Create Room **/
-          //   const roomId = userData.to + userData.from;
-          //   // socket.on(roomId, function (params) {
-          //   //   const message = Message.create({
-          //   //     fromUserId: params.from,
-          //   //     toUserId: params.to,
-          //   //     text: params.text,
-          //   //     files: params.files || null,
-          //   //   });
-          //   //   socket.emit(roomId, {message: message});
-          //   // });
-          //   socket.emit('chat_' + userData.to, {messages: room, idRoom: roomId});
-          //   socket.emit('chat_' + userData.from, {messages: room, idRoom: roomId});
-          // });
-
           Message.create({
             fromUserId: userData.from,
             toUserId: userData.to,
@@ -81,20 +58,23 @@ module.exports = {
         }
       });
 
-      socket.on('disconnect-user', async (res) => {
-        if (res['userId']) {
+      socket.on('disconnect', async (res) => {
+        const token = socket.request.headers['x-access-token'];
+        const userObj = jwt.verify(token, ctx.config.jwt.secret);
+
+        if (userObj) {
           const params = {
-            userId: parseInt(res.userId),
+            userId: userObj.id,
             timeDisconect: Date.now(),
           };
 
           const userTime = await TimeDisconnectUser.find({
-            where: {userId: res.userId },
+            where: {userId: userObj.id },
           });
           if (userTime) {
             TimeDisconnectUser.update(params, {
               where: {
-                userId: res.userId,
+                userId: userObj.id,
               },
             });
           } else {
