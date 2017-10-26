@@ -2,9 +2,12 @@ import parseUser from './middleware/parseUser'
 import isAuth from './middleware/isAuth'
 import getParams from './middleware/getParams'
 import socketAsPromised from 'socket.io-as-promised';
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
+const _ = require('lodash');
 
 let socketC;
+let sockets = [];
+
 module.exports = {
   socketConnected: () => socketC,
   getSockets: async (ctx) => {
@@ -19,8 +22,13 @@ module.exports = {
     io.use(io.middlewares.socketAsPromised);
     /** Database connect **/
     const { Message, User, Support, TimeDisconnectUser } = ctx.models;
+
     ctx.io.on('connection', async (socket) => {
       socketC = socket;
+      const userConnection = jwt.verify(socket.request.headers['x-access-token'], ctx.config.jwt.secret);
+
+      //Add to array sockets
+      sockets.push({socket, userId: userConnection.id});
 
       socket.on('sendMessage', (userData) => {
         /** Find chat if exist **/
@@ -31,8 +39,10 @@ module.exports = {
             text: userData.text,
             files: userData.files || null,
           }).then(res => {
-            socket.emit(`chat_${userData.to}`, { message: res });
-            socket.emit(`chat_${userData.from}`, { message: res });
+            sockets.forEach(item => {
+              item.socket.emit(`chat_${userData.to}`, { message: res });
+              item.socket.emit(`chat_${userData.from}`, { message: res });
+            })
           });
         }
       });
@@ -59,8 +69,7 @@ module.exports = {
       });
 
       socket.on('disconnect', async (res) => {
-        const token = socket.request.headers['x-access-token'];
-        const userObj = jwt.verify(token, ctx.config.jwt.secret);
+        const userObj = jwt.verify(socket.request.headers['x-access-token'], ctx.config.jwt.secret);
 
         if (userObj) {
           const params = {
@@ -69,7 +78,7 @@ module.exports = {
           };
 
           const userTime = await TimeDisconnectUser.find({
-            where: {userId: userObj.id },
+            where: { userId: userObj.id },
           });
           if (userTime) {
             TimeDisconnectUser.update(params, {
@@ -80,6 +89,7 @@ module.exports = {
           } else {
             TimeDisconnectUser.create(params);
           }
+          _.remove(sockets, item => item.userId === userObj.id);
         }
       });
     });
