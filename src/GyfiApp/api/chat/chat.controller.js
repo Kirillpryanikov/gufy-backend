@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 
 export default (ctx) => {
-  const { User, Message } = ctx.models;
+  const { User, Message, TimeDisconnectUser } = ctx.models;
   const { checkNotFound, isAuth } = ctx.helpers;
   const { e400 } = ctx.errors;
   const controller = {};
@@ -33,7 +33,7 @@ export default (ctx) => {
       where: {
         $or: [{fromUserId: userObj.id}, {toUserId: userObj.id}],
       },
-    });
+    })
 
     let result = [];
     _.forEach(users, user => {
@@ -54,10 +54,52 @@ export default (ctx) => {
           data.push(u);
         }
       });
-      result.push(_.maxBy(data, d => d.createdAt))
+      result.push(_.maxBy(data, d => d.createdAt));
     });
+
+    /**
+     * Get count unread messages
+     * @type {number}
+     */
+    await Promise.all(_.map(idUsers, async(res, index) => {
+      let unread = 0;
+      const userTimeVisit = await TimeDisconnectUser.find({
+        where: {
+          userId : userObj.id,
+        },
+      });
+      if (userTimeVisit) {
+        unread = await Message.findAll({
+          where: {
+            toUserId: userTimeVisit.userId,
+            fromUserId: res,
+            createdAt: { $gte: userTimeVisit.timeDisconect },
+          },
+        });
+      }
+      result[index] = {message: result[index], unread: unread.length}
+    }));
     return result;
   };
 
+  controller.getNotReadable = (idUser, ownerId) => {
+    const userTimeVisit = TimeDisconnectUser.find({
+      where: {
+        userId : ownerId,
+      },
+    });
+    if (userTimeVisit) {
+      const allMessages = Message.findAll({
+        where: {
+          toUserId: userTimeVisit.userId,
+          fromUserId: idUser,
+          createdAt: { $gte: userTimeVisit.timeDisconect },
+        },
+      });
+      return allMessages.length;
+    } else {
+      return 0;
+    }
+  };
   return controller;
 }

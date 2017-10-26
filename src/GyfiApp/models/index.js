@@ -17,6 +17,7 @@ export default function () {
     ScratchGameHistory: require('./ScratchGameHistory').default(...arguments),
     FreeGyfi: require('./FreeGyfi').default(...arguments),
     Support: require('./Support').default(...arguments),
+    TimeDisconnectUser: require('./TimeDisconnectUser').default(...arguments),
   };
   return setAssociations(models)
 }

@@ -6,7 +6,7 @@ import socketAsPromised from 'socket.io-as-promised';
 let socketC;
 module.exports = {
   socketConnected: () => socketC,
-  getSockets: (ctx) => {
+  getSockets: async (ctx) => {
     const io = ctx.io;
     io.middlewares = {
       getParams: getParams(ctx),
@@ -17,35 +17,45 @@ module.exports = {
     io.use(io.middlewares.parseUser);
     io.use(io.middlewares.socketAsPromised);
     /** Database connect **/
-    const { Message, User, Support } = ctx.models;
+    const { Message, User, Support, TimeDisconnectUser } = ctx.models;
     ctx.io.on('connection', async (socket) => {
       socketC = socket;
-      socket.on('startChat', (userData) => {
+      socket.on('sendMessage', (userData) => {
         /** Find chat if exist **/
         if (userData.to !== userData.from) {
-          Message.findAll({
-            where: {
-              fromUserId: {$or: [userData.to, userData.from]},
-              toUserId: {$or: [userData.to, userData.from]},
-            },
-            raw: true,
-          }).then(room => {
-            if (room === undefined) {
-              room = {};
-            }
-            /**  Create Room **/
-            const roomId = userData.to + userData.from;
-            socket.on(roomId, function (params) {
-              const message = Message.create({
-                fromUserId: params.from,
-                toUserId: params.to,
-                text: params.text,
-                files: params.files || null,
-              });
-              socket.emit(roomId, {message: message});
-            });
-            socket.emit('chat_' + userData.to, {messages: room, idRoom: roomId});
-            socket.emit('chat_' + userData.from, {messages: room, idRoom: roomId});
+          // Message.findAll({
+          //   where: {
+          //     fromUserId: {$or: [userData.to, userData.from]},
+          //     toUserId: {$or: [userData.to, userData.from]},
+          //   },
+          //   raw: true,
+          // }).then(room => {
+          //   if (room === undefined) {
+          //     room = {};
+          //   }
+          //   /**  Create Room **/
+          //   const roomId = userData.to + userData.from;
+          //   // socket.on(roomId, function (params) {
+          //   //   const message = Message.create({
+          //   //     fromUserId: params.from,
+          //   //     toUserId: params.to,
+          //   //     text: params.text,
+          //   //     files: params.files || null,
+          //   //   });
+          //   //   socket.emit(roomId, {message: message});
+          //   // });
+          //   socket.emit('chat_' + userData.to, {messages: room, idRoom: roomId});
+          //   socket.emit('chat_' + userData.from, {messages: room, idRoom: roomId});
+          // });
+
+          Message.create({
+            fromUserId: userData.from,
+            toUserId: userData.to,
+            text: userData.text,
+            files: userData.files || null,
+          }).then(res => {
+            socket.emit(`chat_${userData.to}`, { message: res });
+            socket.emit(`chat_${userData.from}`, { message: res });
           });
         }
       });
@@ -69,8 +79,30 @@ module.exports = {
             socket.emit('support', params);
           }
         }
-      })
-    })
+      });
+
+      socket.on('disconnect-user', async (res) => {
+        if (res['userId']) {
+          const params = {
+            userId: parseInt(res.userId),
+            timeDisconect: Date.now(),
+          };
+
+          const userTime = await TimeDisconnectUser.find({
+            where: {userId: res.userId },
+          });
+          if (userTime) {
+            TimeDisconnectUser.update(params, {
+              where: {
+                userId: res.userId,
+              },
+            });
+          } else {
+            TimeDisconnectUser.create(params);
+          }
+        }
+      });
+    });
   },
 };
 
