@@ -54,7 +54,11 @@ export default (ctx) => {
           data.push(u);
         }
       });
-      result.push(_.maxBy(data, d => d.createdAt));
+      // {message: result[index], unread: unread.length}
+      result.push({
+        message: _.maxBy(data, d => d.createdAt),
+        unread: 0,
+      });
     });
 
     /**
@@ -77,8 +81,9 @@ export default (ctx) => {
           },
         });
       }
-      result[index] = {message: result[index], unread: unread.length}
+      result[index].unread = unread.length;
     }));
+
     return result;
   };
 
