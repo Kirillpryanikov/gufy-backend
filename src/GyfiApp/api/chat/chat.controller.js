@@ -34,7 +34,8 @@ export default (ctx) => {
         $or: [{fromUserId: userObj.id}, {toUserId: userObj.id}],
       },
     })
-
+    console.log('users ', users.length)
+    console.log('userObj ', userObj.id)
     let result = [];
     _.forEach(users, user => {
       if (user['fromUserId'] != userObj.id) {
@@ -46,7 +47,7 @@ export default (ctx) => {
     });
 
     idUsers = _.uniq(idUsers);
-
+    console.log('idUsers ', idUsers);
     _.forEach(idUsers, (item) => {
       let data = [];
       _.forEach(users, u => {
@@ -54,34 +55,36 @@ export default (ctx) => {
           data.push(u);
         }
       });
+      console.log('******************************** ', data.length);
       // {message: result[index], unread: unread.length}
       result.push({
-        message: _.maxBy(data, d => d.createdAt),
         unread: 0,
+        message: _.maxBy(data, d => d.createdAt),
       });
     });
-
+    console.log('result ', result.unread);
     /**
      * Get count unread messages
      * @type {number}
      */
     await Promise.all(_.map(idUsers, async(res, index) => {
-      let unread = 0;
       const userTimeVisit = await TimeDisconnectUser.find({
         where: {
           userId : userObj.id,
         },
       });
       if (userTimeVisit) {
-        unread = await Message.findAll({
+        const unread = await Message.findAll({
           where: {
             toUserId: userTimeVisit.userId,
             fromUserId: res,
             createdAt: { $gte: userTimeVisit.timeDisconect },
           },
         });
+        result[index].unread = unread.length;
+      } else {
+        result[index].unread = 0;
       }
-      result[index].unread = unread.length;
     }));
 
     return result;
