@@ -12,6 +12,7 @@ export default (ctx) => {
   api.get('/search', controller.getActionByName);
   api.get('/:id/users', controller.users);
   api.get('/:id/tickets', controller.tickets);
+  api.get('/participate', controller.getActionParticipate);
 
   api.post('/', controller.create);
   api.post('/:id/join', controller.join);

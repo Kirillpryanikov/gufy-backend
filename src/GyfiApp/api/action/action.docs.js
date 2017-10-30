@@ -314,7 +314,21 @@ export default(ctx, parent) => {
         }
       },
     },
-
+    '/action/participate': {
+      'get': {
+        'summary': 'Найти акции в который участвует полоьзователь',
+        'parameters': '',
+        'tags': ['action'],
+        'responses': {
+          '200': {
+            'description': 'Акции',
+            'schema': {
+              '$ref': '#/definitions/Action'
+            }
+          }
+        }
+      },
+    },
     '/action/{id}/extend-time': {
       'parameters':[
         {

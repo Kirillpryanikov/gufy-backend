@@ -27,6 +27,16 @@ export default(ctx) => {
     return products
   }
 
+  controller.getPurchasedProducts = async function (req) {
+    const token = req.headers['x-access-token'];
+    const userObj = jwt.verify(token, ctx.config.jwt.secret);
+    return await Product.findAll({
+      where: {
+        buyerId: userObj.id,
+      },
+    })
+  };
+
   controller.getOld = async function(req) {
     const products = await Product.findAll({
       where: {

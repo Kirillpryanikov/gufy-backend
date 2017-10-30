@@ -1,6 +1,7 @@
 
 var jwt = require('jsonwebtoken');
 const moment = require('moment');
+import _ from 'lodash'
 
 export default(ctx) => {
   const { User, Action, Ticket, Values } = ctx.models;
@@ -26,6 +27,36 @@ export default(ctx) => {
     const actions = await Action.findAll(query);
     return actions
   }
+
+  controller.getActionParticipate = async function (req) {
+    const token = req.headers['x-access-token'];
+    const userObj = jwt.verify(token, ctx.config.jwt.secret);
+
+    const actions = await Action.findAll({
+      where: {
+        vipTime: {
+          $gte: new Date(),
+        },
+      },
+    });
+
+    let tickets = await Ticket.findAll({
+      where: {
+        userId: userObj.id,
+      },
+    });
+    tickets = _.uniqBy(tickets, 'actionId');
+    let result = [];
+    tickets.forEach(tiket => {
+      actions.forEach(action => {
+        if (action.id === tiket.actionId) {
+          result.push(action)
+        }
+      })
+    });
+    console.log('result ', result.length)
+    return result;
+  };
 
   controller.getOld = async function() {
     const actions = await Action.findAll({

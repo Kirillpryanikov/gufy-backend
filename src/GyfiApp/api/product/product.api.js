@@ -15,6 +15,7 @@ export default (ctx) => {
   api.get('/:id/sent', controller.sentProduct);
   api.get('/:id/delivered', controller.deliveredProduct);
   api.get('/sold', controller.getSoldProducts);
+  api.get('/purchased', controller.getPurchasedProducts);
 
   api.post('/', controller.create);
   api.put('/:id', controller.update);

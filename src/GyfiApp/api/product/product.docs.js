@@ -164,6 +164,20 @@ export default(ctx, parent) => {
         }
       },
     },
+    '/purchased': {
+      'get': {
+        'summary': 'Получить список купленных товаров',
+        'tags': ['product'],
+        'responses': {
+          '200': {
+            'description': 'Получить список купленных товаров',
+            'schema': {
+              '$ref': '#/definitions/Product'
+            }
+          }
+        }
+      },
+    },
     '/product/{id}': {
       'parameters': [
         {
