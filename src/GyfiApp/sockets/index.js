@@ -25,14 +25,18 @@ module.exports = {
 
     ctx.io.on('connection', async (socket) => {
       socketC = socket;
-      const userConnection = jwt.verify(socket.request.headers['x-access-token'], ctx.config.jwt.secret);
 
+      console.log('connection');
       //Add to array sockets
-      sockets.push({socket, userId: userConnection.id});
-
+      sockets.push({socket, userId: ''});
       socket.on('sendMessage', (userData) => {
         /** Find chat if exist **/
         if (userData.to !== userData.from) {
+          _.forEach(sockets, item => {
+            if (item.socket.id === socket.id && item.userId === '') {
+              item.userId = userData.from;
+            }
+          });
           Message.create({
             fromUserId: userData.from,
             toUserId: userData.to,
@@ -69,27 +73,33 @@ module.exports = {
       });
 
       socket.on('disconnect', async (res) => {
-        const userObj = jwt.verify(socket.request.headers['x-access-token'], ctx.config.jwt.secret);
+        const rem = _.remove(sockets, item => {
+          if (item.userId) {
+            return item.socket.id === socket.id
+          }
+        })[0];
 
-        if (userObj) {
+        if (!rem) {
+          return;
+        }
+        if (rem.userId) {
           const params = {
-            userId: userObj.id,
+            userId: rem.userId,
             timeDisconect: Date.now(),
           };
 
           const userTime = await TimeDisconnectUser.find({
-            where: { userId: userObj.id },
+            where: { userId: rem.userId },
           });
           if (userTime) {
             TimeDisconnectUser.update(params, {
               where: {
-                userId: userObj.id,
+                userId: rem.userId,
               },
             });
           } else {
             TimeDisconnectUser.create(params);
           }
-          _.remove(sockets, item => item.userId === userObj.id);
         }
       });
     });
