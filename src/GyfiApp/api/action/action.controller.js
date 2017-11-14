@@ -203,7 +203,7 @@ export default(ctx) => {
     const { id } = params;
     let action = await Action.findById(id);
 
-    if (parseFloat(params.vipTime) > 0) {
+    if (typeof params.vipTime !== 'string' && parseFloat(params.vipTime) > 0) {
       const token = req.headers['x-access-token'];
       const userObj = jwt.verify(token, ctx.config.jwt.secret);
 
@@ -223,7 +223,7 @@ export default(ctx) => {
         user.gyfi = user.gyfi - costGyfi;
         await user.save();
       }
-    } else {
+    } else if (typeof params.vipTime !== 'string') {
       delete params.vipTime;
     }
 

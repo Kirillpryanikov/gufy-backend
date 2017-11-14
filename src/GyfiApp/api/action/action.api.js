@@ -20,7 +20,6 @@ export default (ctx) => {
   api.put('/:id/extend-time', controller.extendVipTime);
   api.put('/:id', controller.update);
 
-
   api = wrapper(ctx, { model: Action, api });
 
   return api

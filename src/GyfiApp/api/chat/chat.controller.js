@@ -33,9 +33,8 @@ export default (ctx) => {
       where: {
         $or: [{fromUserId: userObj.id}, {toUserId: userObj.id}],
       },
-    })
-    console.log('users ', users.length)
-    console.log('userObj ', userObj.id)
+    });
+
     let result = [];
     _.forEach(users, user => {
       if (user['fromUserId'] != userObj.id) {

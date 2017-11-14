@@ -101,13 +101,15 @@ export default(ctx) => {
 
   controller.update = async function(req) {
     isAuth(req);
-    const params = req.allParams()
+
+    const params = req.allParams();
     const { id } = params
+
     _.omit(params, ['ownerId', 'buyerId']);
 
     let product = await Product.findById(id);
 
-    if (parseFloat(params.vipTime) > 0) {
+    if (typeof params.vipTime !== 'string' && parseFloat(params.vipTime) > 0) {
       const token = req.headers['x-access-token'];
       const userObj = jwt.verify(token, ctx.config.jwt.secret);
 
@@ -119,6 +121,7 @@ export default(ctx) => {
       });
 
       const costGyfi = parseFloat(price.value) * parseFloat(params.vipTime);
+
       if (user.gyfi < costGyfi) {
         throw e400('У вас недостаточно валюты');
       }
@@ -128,7 +131,7 @@ export default(ctx) => {
         user.gyfi = user.gyfi - costGyfi;
         await user.save();
       }
-    } else {
+    } else if (typeof params.vipTime !== 'string') {
       delete params.vipTime;
     }
 

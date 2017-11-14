@@ -25,10 +25,13 @@ module.exports = {
 
     ctx.io.on('connection', async (socket) => {
       socketC = socket;
+      if (socket.request.headers['x-access-token']) {
+        const userConnection = jwt.verify(socket.request.headers['x-access-token'], ctx.config.jwt.secret);
+        sockets.push({socket, userId: userConnection.id});
+      } else {
+        sockets.push({socket, userId: ''});
+      }
 
-      console.log('connection');
-      //Add to array sockets
-      sockets.push({socket, userId: ''});
       socket.on('sendMessage', (userData) => {
         /** Find chat if exist **/
         if (userData.to !== userData.from) {
@@ -105,5 +108,3 @@ module.exports = {
     });
   },
 };
-
-
