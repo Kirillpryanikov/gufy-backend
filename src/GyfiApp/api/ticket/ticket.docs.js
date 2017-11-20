@@ -114,6 +114,36 @@ export default(ctx, parent) => {
           }
         }
       },
+    },
+    '/ticket/buy': {
+      'parameters': [
+        {
+          'name': 'actionId',
+          'in': 'path',
+          'description': 'id',
+          'required': true,
+          'type': 'number',
+        },
+        {
+          'name': 'count',
+          'in': 'path',
+          'description': 'id',
+          'required': false,
+          'type': 'number',
+        },
+      ],
+      'post': {
+        'summary': '',
+        'tags': ['ticket'],
+        'responses': {
+          '200': {
+            'description': 'Купить билеты',
+            'schema': {
+              '$ref': '#/definitions/Ticket'
+            }
+          }
+        }
+      },
     }
   }
 

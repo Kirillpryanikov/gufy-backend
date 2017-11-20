@@ -42,7 +42,7 @@ export default function createModel(ctx) {
             categoryId: this.get('id'),
           },
         })
-        this.productsCount = count
+        this.productsCount = count;
         return this.save()
       },
     }

@@ -103,7 +103,7 @@ export default(ctx) => {
     isAuth(req);
 
     const params = req.allParams();
-    const { id } = params
+    const { id } = params;
 
     _.omit(params, ['ownerId', 'buyerId']);
 
