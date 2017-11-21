@@ -144,7 +144,7 @@ export default class GyfiApp extends ReactApp {
     const { errors } = this
     this.helpers.saveFile = async function saveFile(title, file) {
       const dirname = __dirname + '/public'
-      const type = file.mimetype.split('/')[1] || 'png'
+      const type = file.mimetype.split('/')[1] || 'png';
       let filename = `storage/${title}.${type}`
       try {
         await Promise.promisify(file.mv)([dirname, filename].join('/'))

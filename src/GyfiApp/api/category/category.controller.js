@@ -1,6 +1,6 @@
 export default(ctx) => {
-  const { Product, Category } = ctx.models
-  // const { checkNotFound } = ctx.helpers
+  const { Product, Category } = ctx.models;
+  const { checkNotFound, isAuth } = ctx.helpers;
   // const { e400, e500 } = ctx.errors
   const controller = {}
 
@@ -19,6 +19,22 @@ export default(ctx) => {
     }
     const products = await Product.findAll(query);
     return products
+  };
+
+  controller.create = async function (req) {
+    isAuth(req);
+    const params = req.allParams();
+
+    let data = {
+      title: params.title,
+      image: '',
+    };
+    if (req.files && req.files.image) {
+      const { image } = req.files;
+      const filename = await ctx.helpers.saveFile(`${new Date().getTime()}`, image);
+      data.image = `${ctx.config.protocol}://${ctx.config.host}/${filename}`;
+    }
+    return await Category.create(data);
   };
 
   return controller
