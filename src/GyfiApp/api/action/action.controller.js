@@ -82,7 +82,15 @@ export default(ctx) => {
 
   controller.create = async function(req) {
     isAuth(req);
-    const params = req.allParams();
+    const paramsReq = req.allParams();
+    const params = JSON.parse(paramsReq.data);
+
+    if (req.files && req.files.image) {
+      const { image } = req.files;
+      const filename = await ctx.helpers.saveFile(`${new Date().getTime()}`, image);
+      params.images = `${ctx.config.protocol}://${ctx.config.host}/${filename}`;
+    }
+
     const owner = await User.findById(req.user.id);
     params.ownerId = owner.id;
 

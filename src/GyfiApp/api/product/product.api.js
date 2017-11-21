@@ -1,6 +1,8 @@
 import asyncRouter from 'lego-starter-kit/utils/AsyncRouter'
 import getController from './product.controller'
 import wrapper from '../wrapper'
+import fileUpload from 'express-fileupload';
+
 export default (ctx) => {
   // const { wrapResourse, createResourse } = ctx.helpers
   const { Product } = ctx.models;
@@ -17,7 +19,7 @@ export default (ctx) => {
   api.get('/sold', controller.getSoldProducts);
   api.get('/purchased', controller.getPurchasedProducts);
 
-  api.post('/', controller.create);
+  api.post('/', fileUpload(), controller.create);
   api.put('/:id', controller.update);
   api.post('/:id/buy', controller.buy);
   api.put('/:id/extend-time', controller.extendVipTime);

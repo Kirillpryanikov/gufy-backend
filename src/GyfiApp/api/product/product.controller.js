@@ -60,15 +60,19 @@ export default(ctx) => {
   }
 
   controller.create = async function(req) {
-    isAuth(req)
-    const params = req.allParams()
-    params.ownerId = req.user.id
-    const owner = await User.findById(params.ownerId).then(_checkNotFound('User'))
-
+    isAuth(req);
+    const paramsReq = req.allParams();
+    const params = JSON.parse(paramsReq.data);
+    params.ownerId = req.user.id;
+    const owner = await User.findById(params.ownerId).then(_checkNotFound('User'));
+    if (req.files && req.files.image) {
+      const { image } = req.files;
+      const filename = await ctx.helpers.saveFile(`${new Date().getTime()}`, image);
+      params.images = `${ctx.config.protocol}://${ctx.config.host}/${filename}`;
+    }
     if ((+params.vipTime) > 0) {
       const token = req.headers['x-access-token'];
       const userObj = jwt.verify(token, ctx.config.jwt.secret);
-
       let user = await User.findById(userObj.id);
       const price = await Values.find({
         where: {
@@ -88,16 +92,15 @@ export default(ctx) => {
     } else {
       params.vipTime = new Date(Date.now() + 86400000);
     }
-
-    const product = await Product.create(params)
+    const product = await Product.create(params);
     try {
-      await owner.updateProductsCount()
+      await owner.updateProductsCount();
       await owner.save()
     } catch (err) {
       console.error(err)
     }
     return product
-  }
+  };
 
   controller.update = async function(req) {
     isAuth(req);

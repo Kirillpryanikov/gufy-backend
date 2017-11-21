@@ -1,6 +1,8 @@
 import asyncRouter from 'lego-starter-kit/utils/AsyncRouter'
 import getController from './action.controller'
 import wrapper from '../wrapper'
+import fileUpload from 'express-fileupload';
+
 export default (ctx) => {
   const { Action } = ctx.models;
   const controller = getController(ctx);
@@ -14,7 +16,7 @@ export default (ctx) => {
   api.get('/:id/tickets', controller.tickets);
   api.get('/participate', controller.getActionParticipate);
 
-  api.post('/', controller.create);
+  api.post('/', fileUpload(), controller.create);
   api.post('/:id/join', controller.join);
   api.post('/:id/complete', controller.complete);
   api.put('/:id/extend-time', controller.extendVipTime);
