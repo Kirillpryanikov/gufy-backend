@@ -60,9 +60,17 @@ export default(ctx) => {
   }
 
   controller.create = async function(req) {
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     isAuth(req);
     const paramsReq = req.allParams();
-    const params = JSON.parse(paramsReq.data);
+    console.log('*******************************************, ', paramsReq)
+    let params;
+    if(paramsReq.data) {
+      params = JSON.parse(paramsReq.data);
+    } else {
+      params = paramsReq;
+    }
+    console.log('Step  1 ', params);
     params.ownerId = req.user.id;
     const owner = await User.findById(params.ownerId).then(_checkNotFound('User'));
     if (req.files && req.files.image) {

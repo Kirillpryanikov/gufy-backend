@@ -83,7 +83,12 @@ export default(ctx) => {
   controller.create = async function(req) {
     isAuth(req);
     const paramsReq = req.allParams();
-    const params = JSON.parse(paramsReq.data);
+    let params;
+    if(paramsReq.data) {
+      params = JSON.parse(paramsReq.data);
+    } else {
+      params = paramsReq;
+    }
 
     if (req.files && req.files.image) {
       const { image } = req.files;
