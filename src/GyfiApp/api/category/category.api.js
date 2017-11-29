@@ -13,6 +13,7 @@ export default (ctx) => {
   api = wrapper(ctx, { model: Category, api })
 
   api.post('/create', fileUpload(), controller.create);
+  api.put('/update/:id', fileUpload(), controller.update);
 
   return api
 }

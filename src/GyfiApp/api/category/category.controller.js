@@ -1,7 +1,7 @@
 export default(ctx) => {
   const { Product, Category } = ctx.models;
   const { checkNotFound, isAuth } = ctx.helpers;
-  // const { e400, e500 } = ctx.errors
+  const { e400, e500 } = ctx.errors
   const controller = {}
 
   controller.products = async function(req) {
@@ -35,6 +35,27 @@ export default(ctx) => {
       data.image = `${ctx.config.protocol}://${ctx.config.host}/${filename}`;
     }
     return await Category.create(data);
+  };
+
+  controller.update = async function (req) {
+    isAuth(req);
+    let category;
+    const params = req.allParams();
+    let data = {
+      image: '',
+    };
+    if (params.id) {
+      category = await Category.findById(params.id);
+      if (req.files && req.files.image) {
+        const { image } = req.files;
+        const filename = await ctx.helpers.saveFile(`${new Date().getTime()}`, image);
+        data.image = `${ctx.config.protocol}://${ctx.config.host}/${filename}`;
+      }
+      category.image = data.image;
+      return await category.save();
+    } else {
+      throw e400('Не найдена категория');
+    }
   };
 
   return controller
