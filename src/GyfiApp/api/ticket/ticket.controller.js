@@ -25,7 +25,7 @@ export default(ctx) => {
 
       } else {
         let tickets = [];
-        for(let i = 0; i < countTicket; i++){
+        for(let i = 0; i < countTicket; i++) {
           let data = {
             userId: userObj.id,
             actionId: params.actionId,

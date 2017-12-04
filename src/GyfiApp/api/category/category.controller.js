@@ -22,9 +22,7 @@ export default(ctx) => {
   };
 
   controller.create = async function (req) {
-    isAuth(req);
     const params = req.allParams();
-
     let data = {
       title: params.title,
       image: '',
