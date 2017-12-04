@@ -36,7 +36,6 @@ export default(ctx) => {
   };
 
   controller.update = async function (req) {
-    isAuth(req);
     let category;
     const params = req.allParams();
     let data = {
