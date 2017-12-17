@@ -40,7 +40,7 @@ module.exports = {
         })
       });
 
-      socket.on('sendMessage', (userData) => {
+      socket.on('sendMessage', async (userData) => {
         /** Find chat if exist **/
         if (userData.to !== userData.from) {
           _.forEach(sockets, item => {
@@ -48,6 +48,8 @@ module.exports = {
               item.userId = userData.from;
             }
           });
+          const userFrom = await User.findById(userData.from);
+
           Message.create({
             fromUserId: userData.from,
             toUserId: userData.to,
@@ -57,6 +59,12 @@ module.exports = {
             sockets.forEach(item => {
               item.socket.emit(`chat_${userData.to}`, { message: res });
               item.socket.emit(`chat_${userData.from}`, { message: res });
+
+              let mes = res.text;
+              if (mes.length > 15) {
+                mes = mes.substring(0, 15) + '...';
+              }
+              item.socket.emit(`notification_${userData.to}`, { message: userFrom.firstName + '  ' + userFrom.lastName + ' ' + mes });
             })
           });
         }
