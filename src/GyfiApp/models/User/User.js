@@ -5,7 +5,6 @@ import Sequelize from 'sequelize'
 
 import getSocialService from '../../services/social'
 //
-
 export default function createModel(ctx) {
   if (ctx.models.User) {
     return ctx.models.User
@@ -545,13 +544,13 @@ export default function createModel(ctx) {
         return this.save()
       },
       async updateActionWinsCount() {
-        const { Action } = ctx.models
+        const { Action } = ctx.models;
         const actionWinsCount = await Action.count({
           where: {
             winnerId: this.get('id'),
           },
         })
-        this.actionWinsCount = actionWinsCount
+        this.actionWinsCount = actionWinsCount;
         return this.save()
       },
       async updateBuysCount() {

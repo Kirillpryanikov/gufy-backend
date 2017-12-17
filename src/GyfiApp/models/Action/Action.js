@@ -1,6 +1,8 @@
 import Sequelize from 'sequelize'
 import validator from 'validator'
-import _ from 'lodash'
+import _ from 'lodash';
+import { socketConnected } from '../../sockets';
+
 export default function createModel(ctx) {
   const sequelize = ctx.sequelize
   const Action = sequelize.define('action', {
@@ -71,6 +73,8 @@ export default function createModel(ctx) {
   }, {
     instanceMethods: {
       async complete() {
+        const socket = socketConnected();
+
         const { User } = ctx.models
         const tickets = await this.getTickets()
         if (tickets.length === 0) {
@@ -82,6 +86,7 @@ export default function createModel(ctx) {
               return winner.updateActionWinsCount()
             }, 3000)
           }
+          socket.emit('notification_' + this.winnerId, { messages: 'Вы выиграли в акции ' + this.get('title') + '.'});
           return this.save()
         }
         if (this.get('fixedWinnerId')) {
@@ -90,13 +95,15 @@ export default function createModel(ctx) {
           const winner = _.shuffle(tickets)[0]
           this.winnerId = winner.id
         }
-        const winner = await User.findById(this.winnerId)
+        const winner = await User.findById(this.winnerId);
         if (winner && winner.updateActionWinsCount) {
           setTimeout(() => {
             return winner.updateActionWinsCount()
           }, 3000)
         }
-        this.status = 'COMPLETE'
+        this.status = 'COMPLETE';
+        socket.emit('notification_' + this.winnerId, { messages: 'Вы выиграли в акции ' + this.get('title') + '.'});
+
         return this.save()
       },
       async getTickets() {

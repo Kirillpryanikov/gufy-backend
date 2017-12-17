@@ -60,17 +60,14 @@ export default(ctx) => {
   }
 
   controller.create = async function(req) {
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     isAuth(req);
     const paramsReq = req.allParams();
-    console.log('*******************************************, ', paramsReq)
     let params;
     if(paramsReq.data) {
       params = JSON.parse(paramsReq.data);
     } else {
       params = paramsReq;
     }
-    console.log('Step  1 ', params);
     params.ownerId = req.user.id;
     const owner = await User.findById(params.ownerId).then(_checkNotFound('User'));
     if (req.files && req.files.image) {
@@ -99,6 +96,9 @@ export default(ctx) => {
       }
     } else {
       params.vipTime = new Date(Date.now() + 86400000);
+    }
+    if(!params.status) {
+      params.status = 'REVIEW';
     }
     const product = await Product.create(params);
     try {
@@ -155,11 +155,14 @@ export default(ctx) => {
   };
 
   controller.buy = async function(req) {
+    console.log('step 1')
     isAuth(req);
     const params = req.allParams();
+
     const { id } = params;
     const userObj = jwt.verify(req.headers['x-access-token'], ctx.config.jwt.secret);
     const buyer = await User.findById(userObj.id).then(checkNotFound);
+
     const product = await Product.findById(id).then(checkNotFound);
     if (buyer.gyfi < product.price) {
       throw e400('У вас недостаточно валюты')
@@ -171,6 +174,8 @@ export default(ctx) => {
     const socket = socketConnected();
     socket.emit('chat_' + product.ownerId, {messages: 'Ваш товар ' + product.title + ' куплен', idRoom: roomId});
     socket.emit('chat_' + userObj.id, {messages: 'Владелец товара о покупке ' + product.title + ' оповещен', idRoom: roomId});
+
+    socket.emit('notification_' + product.ownerId, {messages: 'Пользователь ' + buyer.firstName + ' ' + buyer.lastName + ' хочет купить Ваш товар ' + product.title});
 
     product.buyerId = buyer.id;
     product.status = 'INPROCESS';
