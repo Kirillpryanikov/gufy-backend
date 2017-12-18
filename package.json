@@ -93,7 +93,7 @@
     "node-sass": "^3.8.0",
     "pixrem": "^3.0.1",
     "pleeease-filters": "^3.0.0",
-    "pm2": "^2.6.1",
+    "pm2": "^2.9.1",
     "postcss": "^5.0.21",
     "postcss-calc": "^5.2.1",
     "postcss-color-function": "^2.0.1",

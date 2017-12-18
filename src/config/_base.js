@@ -7,7 +7,7 @@ const pkg = require('../../package.json')
 const config = {
   name: 'Gyfi',
   env : process.env.NODE_ENV || process.env.ENV || 'development',
-  port : process.env.PORT || 8081,
+  port : process.env.PORT || 8083,
   host: '185.65.247.3',
   // host: 'localhost',
   protocol: 'http',
