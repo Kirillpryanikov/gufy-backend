@@ -60,11 +60,11 @@ module.exports = {
               item.socket.emit(`chat_${userData.to}`, { message: res });
               item.socket.emit(`chat_${userData.from}`, { message: res });
 
-              let mes = res.text;
-              if (mes.length > 15) {
-                mes = mes.substring(0, 15) + '...';
-              }
-              item.socket.emit(`notification_${userData.to}`, { message: userFrom.firstName + '  ' + userFrom.lastName + ' ' + mes });
+              // let mes = res.text;
+              // if (mes.length > 15) {
+              //   mes = mes.substring(0, 15) + '...';
+              // }
+              // item.socket.emit(`notification_${userData.to}`, { message: userFrom.firstName + '  ' + userFrom.lastName + ' ' + mes });
             })
           });
         }

@@ -25,6 +25,6 @@ export default (ctx) => {
   api.put('/:id/extend-time', controller.extendVipTime);
 
   api = wrapper(ctx, { model: Product, api });
-
+  
   return api
 }
