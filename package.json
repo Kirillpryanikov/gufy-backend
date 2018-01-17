@@ -15,7 +15,6 @@
     "core-decorators": "^0.12.3",
     "express-fileupload": "0.0.5",
     "fcm-push": "^1.1.2",
-    "firebase-admin": "^5.8.0",
     "foursquarevenues": "^2.0.0",
     "importcss": "^1.0.3",
     "isomorphic-fetch": "^2.2.1",
