@@ -74,6 +74,16 @@ export default function createModel(ctx) {
   }, {
     instanceMethods: {
       async complete() {
+        const config = {
+          apiKey: "AIzaSyAPH0M518_QX2dX_-QzH7FlZl_FAFh_IUo",
+          authDomain: "gyfifirebase.firebaseapp.com",
+          databaseURL: "https://gyfifirebase.firebaseio.com",
+          projectId: "gyfifirebase",
+          storageBucket: "gyfifirebase.appspot.com",
+          messagingSenderId: "1030469364175"
+        };
+        admin.initializeApp(config);
+
         const socket = socketConnected();
 
         const { User } = ctx.models
@@ -88,15 +98,6 @@ export default function createModel(ctx) {
             }, 3000)
           }
           socket.emit('notification_' + this.winnerId, { messages: 'Вы выиграли в акции ' + this.get('title') + '.'});
-          const config = {
-            apiKey: "AIzaSyAPH0M518_QX2dX_-QzH7FlZl_FAFh_IUo",
-            authDomain: "gyfifirebase.firebaseapp.com",
-            databaseURL: "https://gyfifirebase.firebaseio.com",
-            projectId: "gyfifirebase",
-            storageBucket: "gyfifirebase.appspot.com",
-            messagingSenderId: "1030469364175"
-          };
-          admin.initializeApp(config);
           /**
            * Firebase send notification
            */
