@@ -1,12 +1,24 @@
 let jwt = require('jsonwebtoken');
 import _ from 'lodash';
 import { socketConnected } from '../../sockets';
+import * as admin from 'firebase-admin';
 
 export default(ctx) => {
   const controller = {}
   const { _checkNotFound, checkNotFound, isAuth } = ctx.helpers
   const { Product, User, Values } = ctx.models
-  const { e400 } = ctx.errors
+  const { e400 } = ctx.errors;
+
+  const config = {
+    apiKey: "AIzaSyAPH0M518_QX2dX_-QzH7FlZl_FAFh_IUo",
+    authDomain: "gyfifirebase.firebaseapp.com",
+    databaseURL: "https://gyfifirebase.firebaseio.com",
+    projectId: "gyfifirebase",
+    storageBucket: "gyfifirebase.appspot.com",
+    messagingSenderId: "1030469364175"
+  };
+  admin.initializeApp(config);
+
 
   controller.get = async function(req) {
     const params = req.query;
@@ -176,6 +188,13 @@ export default(ctx) => {
     socket.emit('chat_' + userObj.id, {messages: 'Владелец товара о покупке ' + product.title + ' оповещен', idRoom: roomId});
 
     socket.emit('notification_' + product.ownerId, {messages: 'Пользователь ' + buyer.firstName + ' ' + buyer.lastName + ' хочет купить Ваш товар ' + product.title});
+    /**
+     * Firebase send notification
+     */
+    admin.messaging().sendToDeviceGroup('notification_' + product.ownerId,
+      {messages: 'Пользователь ' + buyer.firstName + ' ' + buyer.lastName + ' хочет купить Ваш товар ' + product.title })
+      .then(function(response) {console.log("Successfully sent message:", response)})
+      .catch(function(error) { console.log("Error sending message:", error) });
 
     product.buyerId = buyer.id;
     product.status = 'INPROCESS';
