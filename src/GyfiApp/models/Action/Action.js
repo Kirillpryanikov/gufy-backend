@@ -74,15 +74,15 @@ export default function createModel(ctx) {
   }, {
     instanceMethods: {
       async complete() {
-        const config = {
-          apiKey: "AIzaSyAPH0M518_QX2dX_-QzH7FlZl_FAFh_IUo",
-          authDomain: "gyfifirebase.firebaseapp.com",
-          databaseURL: "https://gyfifirebase.firebaseio.com",
-          projectId: "gyfifirebase",
-          storageBucket: "gyfifirebase.appspot.com",
-          messagingSenderId: "1030469364175"
-        };
-        admin.initializeApp(config);
+        // const config = {
+        //   apiKey: "AIzaSyAPH0M518_QX2dX_-QzH7FlZl_FAFh_IUo",
+        //   authDomain: "gyfifirebase.firebaseapp.com",
+        //   databaseURL: "https://gyfifirebase.firebaseio.com",
+        //   projectId: "gyfifirebase",
+        //   storageBucket: "gyfifirebase.appspot.com",
+        //   messagingSenderId: "1030469364175"
+        // };
+        // admin.initializeApp(config);
 
         const socket = socketConnected();
 
@@ -101,10 +101,10 @@ export default function createModel(ctx) {
           /**
            * Firebase send notification
            */
-          admin.messaging().sendToDeviceGroup('notification_' + this.winnerId,
-            {messages: 'Вы выиграли в акции ' + this.get('title') + '.' })
-            .then(function(response) {})
-            .catch(function(error) {});
+          // admin.messaging().sendToDeviceGroup('notification_' + this.winnerId,
+          //   {messages: 'Вы выиграли в акции ' + this.get('title') + '.' })
+          //   .then(function(response) {})
+          //   .catch(function(error) {});
           return this.save()
         }
         if (this.get('fixedWinnerId')) {
@@ -124,10 +124,10 @@ export default function createModel(ctx) {
         /**
          * Firebase send notification
          */
-        admin.messaging().sendToDeviceGroup('notification_' + this.winnerId,
-          {messages: 'Вы выиграли в акции ' + this.get('title') + '.' })
-          .then(function(response){})
-          .catch(function(error){});
+        // admin.messaging().sendToDeviceGroup('notification_' + this.winnerId,
+        //   {messages: 'Вы выиграли в акции ' + this.get('title') + '.' })
+        //   .then(function(response){})
+        //   .catch(function(error){});
 
         return this.save()
       },

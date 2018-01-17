@@ -1,7 +1,7 @@
 let jwt = require('jsonwebtoken');
 import _ from 'lodash';
 import { socketConnected } from '../../sockets';
-import * as admin from 'firebase-admin';
+// import * as admin from 'firebase-admin';
 
 export default(ctx) => {
   const controller = {}
@@ -9,15 +9,16 @@ export default(ctx) => {
   const { Product, User, Values } = ctx.models
   const { e400 } = ctx.errors;
 
-  const config = {
-    apiKey: "AIzaSyAPH0M518_QX2dX_-QzH7FlZl_FAFh_IUo",
-    authDomain: "gyfifirebase.firebaseapp.com",
-    databaseURL: "https://gyfifirebase.firebaseio.com",
-    projectId: "gyfifirebase",
-    storageBucket: "gyfifirebase.appspot.com",
-    messagingSenderId: "1030469364175"
-  };
-  admin.initializeApp(config);
+  // const config = {
+  //   apiKey: "AIzaSyAPH0M518_QX2dX_-QzH7FlZl_FAFh_IUo",
+  //   authDomain: "gyfifirebase.firebaseapp.com",
+  //   databaseURL: "https://gyfifirebase.firebaseio.com",
+  //   projectId: "gyfifirebase",
+  //   storageBucket: "gyfifirebase.appspot.com",
+  //   messagingSenderId: "1030469364175",
+  //   named: "gufi"
+  // };
+  // admin.initializeApp(config);
 
 
   controller.get = async function(req) {
@@ -191,10 +192,10 @@ export default(ctx) => {
     /**
      * Firebase send notification
      */
-    admin.messaging().sendToDeviceGroup('notification_' + product.ownerId,
-      {messages: 'Пользователь ' + buyer.firstName + ' ' + buyer.lastName + ' хочет купить Ваш товар ' + product.title })
-      .then(function(response) {console.log("Successfully sent message:", response)})
-      .catch(function(error) { console.log("Error sending message:", error) });
+    // admin.messaging().sendToDeviceGroup('notification_' + product.ownerId,
+    //   {messages: 'Пользователь ' + buyer.firstName + ' ' + buyer.lastName + ' хочет купить Ваш товар ' + product.title })
+    //   .then(function(response) {console.log("Successfully sent message:", response)})
+    //   .catch(function(error) { console.log("Error sending message:", error) });
 
     product.buyerId = buyer.id;
     product.status = 'INPROCESS';
