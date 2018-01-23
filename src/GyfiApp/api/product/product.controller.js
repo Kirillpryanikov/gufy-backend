@@ -176,6 +176,13 @@ export default(ctx) => {
     socket.emit('chat_' + userObj.id, {messages: 'Владелец товара о покупке ' + product.title + ' оповещен', idRoom: roomId});
 
     socket.emit('notification_' + product.ownerId, {messages: 'Пользователь ' + buyer.firstName + ' ' + buyer.lastName + ' хочет купить Ваш товар ' + product.title});
+    /**
+     * Firebase send notification
+     */
+    ctx.config.firebaseAdmin.messaging().sendToDeviceGroup('notification_' + product.ownerId,
+      {messages: 'Пользователь ' + buyer.firstName + ' ' + buyer.lastName + ' хочет купить Ваш товар ' + product.title })
+      .then(function(response) {console.log("Successfully sent message:", response)})
+      .catch(function(error) { console.log("Error sending message:", error) });
 
     product.buyerId = buyer.id;
     product.status = 'INPROCESS';

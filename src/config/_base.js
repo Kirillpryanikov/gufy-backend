@@ -3,6 +3,8 @@ import _debug from 'debug'
 import path from 'path'
 import { argv } from 'yargs'
 const pkg = require('../../package.json')
+import * as admin from 'firebase-admin';
+import * as serviceAccount from "./gyfifirebase-firebase-adminsdk.json";
 
 const config = {
   name: 'Gyfi',
@@ -64,6 +66,7 @@ const config = {
     secret: 'qweqweqwe12312312',
     devToken: '',
   },
+  firebaseAdmin: ''
 }
 
 config.url = `${config.protocol}://${config.host}`
@@ -74,6 +77,15 @@ if (config.port && config.protocol !== 'https') {
 if (config.social.ok) {
   config.social.ok.callbackURL = `${config.url}/auth/odnoklassniki/callback`
 }
+
+if (serviceAccount) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://gyfifirebase.firebaseio.com"
+  });
+  config.firebaseAdmin = admin;
+}
+
 
   // env : process.env.NODE_ENV || process.env.ENV || 'development',
 config.globals = {

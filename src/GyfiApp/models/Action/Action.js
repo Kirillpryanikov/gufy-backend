@@ -86,7 +86,13 @@ export default function createModel(ctx) {
               return winner.updateActionWinsCount()
             }, 3000)
           }
-          socket.emit('notification_' + this.winnerId, { messages: 'Вы выиграли в акции ' + this.get('title') + '.'});
+          // socket.emit('notification_' + this.winnerId, { messages: 'Вы выиграли в акции ' + this.get('title') + '.'});
+
+          ctx.config.firebaseAdmin.messaging().sendToDeviceGroup('notification_' + this.winnerId,
+            { messages:  'Вы выиграли в акции ' + this.get('title') + '.' })
+            .then(function(response) {console.log("Successfully sent message:", response) })
+            .catch(function(error) { console.log("Error sending message:", error) });
+
           return this.save()
         }
         if (this.get('fixedWinnerId')) {
@@ -102,7 +108,11 @@ export default function createModel(ctx) {
           }, 3000)
         }
         this.status = 'COMPLETE';
-        socket.emit('notification_' + this.winnerId, { messages: 'Вы выиграли в акции ' + this.get('title') + '.'});
+        // socket.emit('notification_' + this.winnerId, { messages: 'Вы выиграли в акции ' + this.get('title') + '.'});
+        ctx.config.firebaseAdmin.messaging().sendToDeviceGroup('notification_' + this.winnerId,
+          { messages:  'Вы выиграли в акции ' + this.get('title') + '.' })
+          .then(function(response) {console.log("Successfully sent message:", response) })
+          .catch(function(error) { console.log("Error sending message:", error) });
 
         return this.save()
       },
